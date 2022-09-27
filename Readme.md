@@ -13,9 +13,8 @@ Se encuentra desplegado en [PythonAnywhere](https://www.pythonanywhere.com/)
 ## Requisitos
 
 Se recomienda usar Ubuntu 20.04
-```
-Tener instalado MySQL y PostgreSQL server
-```
+
+Y tener instalado MySQL y PostgreSQL server
 
 ## Instalación
 
