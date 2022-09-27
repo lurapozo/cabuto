@@ -1,0 +1,110 @@
+{% load static %} {% include 'Shared/header.html' %} {% include 'Shared/navbar.html' %} {% include 'Shared/sidebar.html' %}
+<style>
+    div#img-central {
+        margin-top: 5rem;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    img#logo-central {
+        width: 50%;
+        opacity: 0.4;
+    }
+    .contenedor-repartidor{
+        margin:auto;
+        padding: 20px 10px;
+        border-radius:15px;
+        min-width: min-content;
+        max-width: 70%;
+    }
+
+    .cobertura{
+        text-align: center;
+    }
+    thead th{
+        background-color: #FE3A00;
+        color:white;
+        padding: 7px !important;
+        vertical-align: middle !important;
+        line-height: 1rem;
+        border:0px;
+    }
+    tr th:first-child {
+      border-top-left-radius: 7px;
+      border-bottom-left-radius: 7px;
+    }
+    tr th:last-child {
+      border-top-right-radius: 7px;
+      border-bottom-right-radius: 7px;
+    }
+    tbody td{
+        border-top: 2px solid rgba(15,25,94,0.3) !important;
+        border-bottom: 1px solid rgba(15,25,94,0.3);
+        padding: 0.3rem !important;
+        vertical-align: middle !important;
+        color:#444242;
+    }
+    tr:first-child td {
+        border-top: none !important;
+    }
+    table th{
+        border: none !important;
+    }
+    .boton1 .btn{
+        margin: auto;
+        text-align: center;
+        background: linear-gradient(to right, #2153FF, #0F195E);
+        color: white;
+        font-weight: bolder;
+        font-size: 15px;
+        width: 9rem;
+        height: 2.5rem;
+    }
+    .boton1 a{
+        display:flex;
+        justify-content: center;
+        align-items:center;
+    }
+    h3 {
+        padding-top: 4rem;
+        padding-left: 5%;
+        font-weight: bold;
+        color: #0F195E;
+        margin: auto;
+    }
+</style>
+
+<head>
+    <title><h1>Orden: {{data.id_pedido}}</h1></title>
+</head>
+<div class="col-12">
+    <div class="col-md-12">
+      <h3 class="row">Repartidores Disponibles</h3>
+    </div>
+</div>
+<div class="contenedor-repartidor">
+    <div id="img-central">
+        
+        <table class="table cobertura">
+            <thead>
+                <tr>
+                <th>Nombre</th>
+                <th>Telefono</th>
+                <th>Estado</th>
+                <th>Asignar</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for repartidor in repartidores %}
+                <tr>
+                    <td>{{repartidor.nombre}} {{repartidor.apellido}}</td>
+                    <td>{{repartidor.telefono}}</td>
+                    <td>{{repartidor.estado}}</td>
+                    <td><div class = "boton1"><a class="btn btn-sm" href="ocupar_repartidores/{{repartidor.id_repartidor}}/{{data.id_pedido}}" onclick="return confirm('¿Está seguro que desea asignar este repartidor?');">Asignar</a></div></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>

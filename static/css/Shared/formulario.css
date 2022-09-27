@@ -1,0 +1,103 @@
+body {
+	background-image: url('../../img/fondo.png');
+	background-size: cover;
+}
+.title-container {
+	width: 100%;
+	text-align: center;
+}
+.wrapper {
+	width: 100%;
+	margin: 50px 0px;
+}
+.input-main-container {
+	background-color: white;
+	width: 600px;
+	margin: 0px auto;
+	border: 2px solid gray;
+	border-radius: 7px;
+}
+.title-form-container {
+	background-color: #ca5153;
+	color: white;
+	font-family: 'Hand of Sean';
+	text-align: center;
+	padding: 20px;
+}
+.input-wrapper {
+	font-family: 'Hand of Sean';
+	padding: 20px;
+}
+.input-container {
+	margin-bottom: 10px;
+}
+.input-container > img {
+	width: 250px;
+	padding-bottom: 10px;
+}
+.input {
+	background-color: #edcbc3;
+	border-radius: 7px;
+}
+.btn-container {
+	display: flex;
+	margin: 25px 0px 10px;
+}
+.btn-formulario {
+	background-color: #ca5153;
+	color: white;
+}
+.btn-formulario:hover {
+	background-color: #c0193b;
+	color: white;
+}
+.btn-guardar {
+	margin: 0px 0px 0px auto;
+}
+.pizza-componente-seleccion-disponible {
+	display: block;
+}
+.pizza-componente-seleccion-bloqueado {
+	display: none;
+}
+
+/* ADICION PARA FORMULARIO DE CREAR PIZZAS*/
+.subtitle-anadir-container {
+	margin-top: 20px;
+	display: flex;
+}
+.subtitle-anadir-container button{
+	margin: 2px 0px 0px auto;
+    height: 30px;
+    padding-top: 3px;
+    background-color: #6EDF49;
+    border: 1px solid #6EDF49;
+}
+.select-wrapper {
+	display: flex;
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid gray;
+}
+.select-ingrediente-container {
+	width: 50%;
+}
+.select-porcion-container {
+	margin-left: 5%;
+	width: 35%;
+}
+.remover_ingrediente_btn {
+	margin-left: 5%;
+    width: 5%;
+    height: 26px;
+    margin-top: 25px;
+    padding-top: 3px;
+    padding-left: 6px;
+}
+.remover_opcion_btn {
+	margin-left: 5%;
+    width: 5%;
+    height: 26px;
+    padding-top: 3px;
+    padding-left: 6px;
+}

@@ -1,0 +1,1344 @@
+{% load static %}
+{% load tz %}
+{% include 'Shared/header.html' %}
+{% include 'Shared/sidebar.html' %}
+{% include 'Shared/navbar.html' %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/css/bootstrap-select.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.15.1/moment.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.14/js/bootstrap-select.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/i18n/defaults-es_ES.js"></script>
+
+
+<style>
+    h3 {
+        padding: 5% 0% 5% 5% !important;
+        font-weight: bold;
+        color: #0F195E;
+        margin: auto;
+    }
+    .contenedor-clientes{
+        margin:auto;
+        padding: 20px 10px;
+        background-color: #EDEEF0;
+        border-radius:15px;
+        min-width: min-content;
+    }
+    .clientes{
+        text-align: center;
+    }
+    thead th{
+        background-color: #FE3A00;
+        color:white;
+        padding: 7px !important;
+        vertical-align: middle !important;
+        line-height: 1rem;
+        border:0px;
+    }
+    tr th:first-child {
+      border-top-left-radius: 7px;
+      border-bottom-left-radius: 7px;
+    }
+    tr th:last-child {
+      border-top-right-radius: 7px;
+      border-bottom-right-radius: 7px;
+    }
+    tbody td{
+        border-top: 2px solid rgba(15,25,94,0.3) !important;
+        border-bottom: 1px solid rgba(15,25,94,0.3);
+        padding: 1.1rem !important;
+        vertical-align: middle !important;
+        color:#444242;
+    }
+    tr:first-child td {
+        border-top: none !important;
+    }
+    table th{
+        border: none !important;
+    }
+    .btn-new{
+        font-weight: bold;
+        color: #0F195E;
+        background: #D8D9DD;
+        padding: 5px 20px 5px 20px;
+        border-radius: 5px;
+        vertical-align: middle;
+        height: 40px;
+        font-size: 1rem;
+        width: 40%;
+    }
+
+    .contenedor-filtro{
+        width: 100%;
+        display: flex;
+        justify-content: flex-end;
+        padding-top: 50px;
+    }
+    .contenedor-fecha{
+        width: 100%;
+        display: flex;
+        justify-content: flex-end;
+        padding-top: 10px;
+        margin-bottom: 20px;
+    }
+    #fromDate, #toDate{
+        width: min-content;
+        color: #0F195E;
+        background: #D8D9DD;
+    }
+    #buscar{
+        width:1rem;
+        height: 1rem;
+        margin: auto 0px auto 10px;
+    }
+    .texto-filtro{
+        margin: auto 15px auto 10px;
+    }
+    .total-clientes{
+        width: 90%;
+        border-top: 3px solid #0F195E;
+        padding-top: 10px;
+        margin-top: 2rem;
+        color: #444242;
+    }
+    .total-clientes span:first-child{
+        font-weight: bold;
+        padding-right: 25px;
+        padding-left: 35%;
+        color: #0F195E;
+    }
+    .pagination{
+        justify-content: center;
+        margin-top:10px;
+    }
+    .pagination .active{
+        width: 1.6rem;
+        background: #0f195e;
+        color: white;
+        text-align: center;
+        border-radius: 0.5rem;
+        margin: 0px 20px;
+        height: 1.5rem;
+        font-weight: bolder;
+        font-size: 14px;
+        padding-top: 2px;
+    }
+    .pagination li:first-child a,
+    .pagination li:last-child a,
+    .pagination li:first-child span,
+    .pagination li:last-child span{
+        color: #0f195e;
+        font-size: 13px;
+    }
+    .nav-tabs{
+        border-bottom: 0px;
+        padding: 0px 35px;
+    }
+    .nav-tabs .nav-link {
+        border: .1px solid;
+        background: #9a999e;
+        color: white;
+        font-weight: bold;
+        font-size: 15px;
+        border-top-left-radius: 15px;
+        border-top-right-radius: 15px;
+    }
+    .nav-link.active {
+        color: #0f195e !important;
+        padding: .5rem 2rem;
+        background-color: #edeef0 !important;
+        border-color: #dee2e6 #dee2e6 #edeef0 !important;
+    }
+    .open-modal{
+        color: #007bff !important;
+        cursor: pointer;
+    }
+    #contenedor-mapa{
+        height: 15rem;
+        width: auto;
+        margin: auto;
+        margin-bottom: 10px;
+    }
+    .cerrar-modal{
+        margin-top: 20px;
+        text-align: end;
+        margin-right: 20px;
+    }
+
+
+    h3 {
+        padding-top: 4rem;
+        padding-left: 5%;
+        font-weight: bold;
+        color: #0F195E;
+        margin: auto;
+    }
+    .contenedor-filtro{
+        width: 100%;
+        display: flex;
+        justify-content: flex-end;
+    }
+    .contenedor-searchbar{
+        display: flex;
+        align-items: center;
+        border-radius: 5px;
+        height: 40px;
+        font-size: 1rem;
+    }
+    .contenedor{
+        width: 95%;
+    }
+    .div-pedido{
+        display: flex;
+        align-items: center;
+        box-shadow: 3px 3px 3px 3px #c2c2c2;
+        border-radius: 15px;
+        margin: 20px 20px;
+        min-width: 29rem;
+        min-height: 5rem;
+        cursor: pointer;
+    }
+    .contener-columna{
+        display: flex;
+        position: relative;
+        left: 6%;
+        width: 75%;
+        align-items: center;
+    }
+    .contener-columna .nombre-pedido{
+        font-weight: bold;
+        color: #0F195E;
+        width: 45%;
+        padding: 0px 10px;
+        margin: 0px;
+    }
+    .contener-columna .direccion-pedido{
+        font-family: 'MyriadPro-Light' !important;
+        font-style: normal;
+        color: gray;
+        font-weight: bolder;
+        font-size: 0.9rem;
+        width: 25%;
+        margin: 0px;
+    }
+
+    .contener-columna .telefono-pedido{
+        margin-bottom: 2px;
+        margin-top: 0px;
+        display: flex;
+        justify-content: space-around;
+    }
+
+    .contener-columna .telefono-pedido img{
+        height: 15px;
+        margin-top: 2px;
+    }
+    .div-contenedor-pedido{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+    }
+    .indice{
+        font-weight: bold;
+        color: #0F195E;
+        margin: 0px;
+    }
+
+    .contener-columna .telefono-pedido p{
+        margin: 0px 0px 0px 5px;
+        font-family: 'MyriadPro-Light' !important;
+        font-style: normal;
+        color: #87868A;
+        font-weight: bolder;
+        font-size: 0.75rem;
+    }
+    .contener-columnaI{
+        float: right;
+        position: relative;
+        padding-right: 20px;
+        text-align: right;
+        left: 5%;
+    }
+    .contener-columnaI img{
+        height: 3.5rem;
+        width: 3.5rem;
+        border-radius: 45%;
+    }
+    .titulo{
+        margin-bottom: 20px;
+    }
+    .nombre-cliente{
+        font-weight: bolder;
+        margin-bottom: 1rem;
+        color: #0F195E;
+        padding: 0px;
+    }
+    #contenedor-mapa{
+        height: 15rem;
+        width: auto;
+        margin: auto;
+        margin-bottom: 10px;
+    }
+    .cerrar-modal{
+        margin-top: 20px;
+        text-align: end;
+        margin-right: 20px;
+    }
+</style>
+<script type="text/javascript">
+    $(document).ready(function() {
+        var audio = document.getElementById("miAudio");
+        audio.volume = 0.75;
+        var activeTab = "{{tab}}";
+        if (activeTab != "") {
+            $('#' + activeTab).click();
+        }
+        var modalDiv = $("#modal-div");
+        $(".open-modal").on("click", function() {
+          $.ajax({
+            beforeSend: function(){
+                $('.ajax-loader').css("visibility", "visible");
+            },
+            url: $(this).attr("data-url"),
+            success: function(data) {
+                modalDiv.html(data);
+                $("#myModal").modal();
+            },
+            complete: function(){
+                $('.ajax-loader').css("visibility", "hidden");
+            }
+          });
+        });
+        $('.selectpicker').selectpicker();
+        var now = new Date();
+        var month = (now.getMonth() + 1);
+        var day = now.getDate();
+        if (month < 10)
+            month = "0" + month;
+        if (day < 10)
+            day = "0" + day;
+        var today = now.getFullYear() + '-' + month + '-' + day;
+        var to = document.getElementById("toDate");
+        to.setAttribute("max", today);
+        var from = document.getElementById("fromDate");
+        from.setAttribute("max", today);
+        document.getElementById("fromDate").onchange = function () {
+            var input = document.getElementById("toDate");
+            input.setAttribute("min", this.value);
+        }
+        document.getElementById("toDate").onchange = function () {
+            var input = document.getElementById("fromDate");
+            input.setAttribute("max", this.value);
+        }
+
+        $('#filtro').val("{{filtro}}");
+        $('.selectpicker').selectpicker('refresh')
+    });
+    function ubicacion(nombre,latitud, longitud){
+
+        var nombreLocal = document.getElementById("texto-modal");
+        console.log(nombreLocal);
+        nombreLocal.innerHTML =nombre;
+        var link = document.getElementById("ruta");
+        console.log(link);
+        link.innerHTML ="https://www.google.com/maps/search/?api=1&query="+latitud+","+longitud;
+        var myLatLng = new google.maps.LatLng(latitud, longitud);
+        var mapOptions = {
+            zoom: 17,
+            center: myLatLng,
+            mapTypeId: google.maps.MapTypeId.RoadMap
+        };
+        var map = new google.maps.Map(document.getElementById('contenedor-mapa'),mapOptions);
+        new google.maps.Marker({
+            position: myLatLng,
+            map,
+        });
+    }
+    function copiar(){
+        var codigoACopiar = document.getElementById('ruta');
+        var seleccion = document.createRange();
+        seleccion.selectNodeContents(codigoACopiar);
+        window.getSelection().removeAllRanges();
+        window.getSelection().addRange(seleccion);
+        var res=document.execCommand('copy')
+        if(res){
+            alert("Se ha copiado el link de la ubicación al portapapeles")
+        }
+        window.getSelection().removeRange(seleccion);
+    }
+    function buscarClientes(){
+        var fromDate = document.getElementById("fromDate").value;
+        var toDate = document.getElementById("toDate").value;
+        var filtro = document.getElementById("filtro").value;
+        if("{{filtro}}"!="None"){
+            if(fromDate!=""){
+                if(toDate!=""){
+                    location = '?filtro='+"{{filtro}}"+'&from='+fromDate+'&to='+toDate;
+                }else{
+                    location = '?filtro='+"{{filtro}}"+'&from='+fromDate;
+                }
+            }else if(toDate!=""){
+                location = '?filtro='+"{{filtro}}"+'&to='+toDate;
+            }
+        }else{
+            if(fromDate!=""){
+                if(toDate!=""){
+                    location = '?from='+fromDate+'&to='+toDate;
+                }else{
+                    location = '?from='+fromDate;
+                }
+            }else if(toDate!=""){
+                location = '?to='+toDate;
+            }
+        }
+    }
+    function confirmar(id,estado){
+        if(estado=='Enviado'){
+            if(confirm('¿Desea confirmar que el pedido ha sido entregado?')){
+                location = '../pedidosEspera/confirmar_pedido/'+id;
+            }else{
+                return false
+            }
+        }else{
+            if(confirmacion=confirm('¿Desea confirmar que el pedido ha sido enviado?')){
+                location = '../pedidosEspera/confirmar_pedido/'+id;
+            }else{
+                return false
+            }
+        }
+
+    }
+/*
+    function copiar(){
+        var codigoACopiar = document.getElementById('ruta');
+        var seleccion = document.createRange();
+        seleccion.selectNodeContents(codigoACopiar);
+        window.getSelection().removeAllRanges();
+        window.getSelection().addRange(seleccion);
+        var res=document.execCommand('copy')
+        if(res){
+            alert("Se ha copiado el link de la ubicación al portapapeles")
+        }
+        window.getSelection().removeRange(seleccion);
+    }
+    function confirmar(id,estado){
+        if(estado=='Enviado'){
+            if(confirm('¿Desea confirmar que el pedido ha sido entregado?')){
+                location = '../pedidosEspera/confirmar_pedido/'+id;
+            }else{
+                return false
+            }
+        }else{
+            if(confirmacion=confirm('¿Desea confirmar que el pedido ha sido enviado?')){
+                location = '../pedidosEspera/confirmar_pedido/'+id;
+            }else{
+                return false
+            }
+        }*/
+    setTimeout(function(){
+        window.location.reload(1);
+    }, 180000);
+</script>
+{% if recibidos %}
+
+    <audio src="https://www.mboxdrive.com/Fit%20for%20an%20Autopsy%20-%20The%20Conqueror%20Lyric%20Video.mp3" id="miAudio" autoplay></audio>
+{% endif %}
+{% timezone "America/Guayaquil" %}
+<div class="col-12">
+    <div class="col-md-12">
+        <div class="row">
+            <h3 class="col-md-6">PEDIDOS</h3>
+            <div class="col-md-6">
+                <div class="row contenedor-filtro">
+                    <h6 class="texto-filtro">Ordenar por:</h6>
+                    <select id="filtro" class="selectpicker" onchange="location = '?filtro='+this.value;"
+                        data-style="btn-new">
+                        <option>--- Ordenar por: ---</option>
+                        <option value="fecha">Fecha</option>
+                        <option value="total">Total</option>
+                        <option value="cliente">Cliente</option>
+                    </select>
+                </div>
+                <div class="row contenedor-fecha">
+                <h6 class="texto-filtro">Desde:</h6>
+                <input type='date' class="form-control" id='fromDate' />
+                <h6 class="texto-filtro">Hasta:</h6>
+                <input type='date' class="form-control" id='toDate' />
+                <img id="buscar" onclick="buscarClientes()" src="{% static 'img/iconos_administrador/buscar_azul.png' %}">
+            </div>
+            </div>
+        </div>
+        <ul class="nav nav-tabs container">
+            <!--<li class="nav-item">
+                <a class="nav-link active" id="tHome" data-toggle="tab" href="#home">Todos</a>
+            </li>-->
+
+            <li class="nav-item">
+                <a class="nav-link active" id="tMenu0" data-toggle="tab" href="#menu0">Espera</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="tMenu1" data-toggle="tab" href="#menu1">Recibidos</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="tMenu2" data-toggle="tab" href="#menu2">Enviados</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="tMenu3" data-toggle="tab" href="#menu3">Entregados</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="tMenu4" data-toggle="tab" href="#menu4">Devueltos</a>
+            </li>
+        </ul>
+
+        <div class="tab-content">
+            <!--<div class="tab-pane container active" id="home">
+                <div class="contenedor-clientes">
+                    {% if datos %}
+                    <table class="table clientes">
+                        <thead>
+                            <tr>
+                                <th>Código</th>
+                                <th>Fecha</th>
+                                <th>Hora</th>
+                                <th>Cliente</th>
+                                <th>Total</th>
+                                <th>Lugar de entrega</th>
+                                <th>Forma de pago</th>
+                                <th>Observaciones</th>
+                                <th>Detalle</th>
+                                <th>Estatus</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for data in datos %}
+                            <tr>
+                                <td>{{data.id_pedido|stringformat:"03d"}}</td>
+                                <td>{{data.fecha| date:"d/m/Y"}}</td>
+                                <td>{{data.fecha| date:"H:i"}}</td>
+                                <td>{{data.cliente.nombre}} {{data.cliente.apellido}}</td>
+                                <td>${{data.total|floatformat:2 }}</td>
+                                <td>{{data.tipo_entrega}}</td>
+                                <td>{{data.tipo_pago}}</td>
+                                <td>{{data.observacion}}</td>
+                                <td>
+                                    <a class="contenedor open-modal" data-url="/detalle_pedido/{{data.id_pedido}}">
+                                        Ver detalle
+                                    </a>
+                                </td>
+                                <td>{{data.estado}}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    <div class="total-clientes">
+                        <span>Total Pedidos: </span><span>{{datos.paginator.count}}</span>
+                        <p>
+                            <span>Total Venta: </span><span>${{total}}</span>
+                        </p>
+                    </div>
+                    {% else %}
+                    <h3 style="display: table;">No existen datos para presentar</h3>
+                    {% endif %}
+                </div>
+
+
+                {% if datos.has_other_pages %}
+                <ul class="pagination">
+                    {% if datos.has_previous %}
+                    {% if filtro == None %}
+                    {% if desde != None %}
+                    {% if hasta != None %}
+                    <li><a href="./?page={{ datos.previous_page_number }}&from={{desde}}&to={{hasta}}">Anterior</a></li>
+                    {% else %}
+                    <li><a href="./?page={{ datos.previous_page_number }}&from={{desde}}">Anterior</a></li>
+                    {% endif %}
+                    {% else %}
+                    {% if hasta != None %}
+                    <li><a href="./?page={{ datos.previous_page_number }}&filtro={{ filtro }}&to={{hasta}}">Anterior</a>
+                    </li>
+                    {% else %}
+                    <li><a href="./?page={{ datos.previous_page_number }}">Anterior</a></li>
+                    {% endif %}
+                    {% endif %}
+                    {% else %}
+                    {% if desde != None %}
+                    {% if hasta != None %}
+                    <li><a
+                            href="./?page={{ datos.previous_page_number }}&filtro={{ filtro }}&from={{desde}}&to={{hasta}}">Anterior</a>
+                    </li>
+                    {% else %}
+                    <li><a
+                            href="./?page={{ datos.previous_page_number }}&filtro={{ filtro }}&from={{desde}}">Anterior</a>
+                    </li>
+                    {% endif %}
+                    {% else %}
+                    {% if hasta != None %}
+                    <li><a href="./?page={{ datos.previous_page_number }}&filtro={{ filtro }}&to={{hasta}}">Anterior</a>
+                    </li>
+                    {% else %}
+                    <li><a href="./?page={{ datos.previous_page_number }}&filtro={{ filtro }}">Anterior</a></li>
+                    {% endif %}
+                    {% endif %}
+                    {% endif %}
+                    {% else %}
+                    <li class="disabled"><span>Anterior</span></li>
+                    {% endif %}
+                    <li class="active"><span>{{ datos.number }} <span class="sr-only">(current)</span></span></li>
+                    {% if datos.has_next %}
+                    {% if filtro == None %}
+                    {% if desde != None %}
+                    {% if hasta != None %}
+                    <li><a href="./?page={{ datos.next_page_number }}&from={{desde}}&to={{hasta}}">Siguiente</a></li>
+                    {% else %}
+                    <li><a href="./?page={{ datos.next_page_number }}&from={{desde}}">Siguiente</a></li>
+                    {% endif %}
+                    {% else %}
+                    {% if hasta != None %}
+                    <li><a href="./?page={{ datos.next_page_number }}&filtro={{ filtro }}&to={{hasta}}">Siguiente</a>
+                    </li>
+                    {% else %}
+                    <li><a href="./?page={{ datos.next_page_number }}">Siguiente</a></li>
+                    {% endif %}
+                    {% endif %}
+                    {% else %}
+                    {% if desde != None %}
+                    {% if hasta != None %}
+                    <li><a
+                            href="./?page={{ datos.next_page_number }}&filtro={{ filtro }}&from={{desde}}&to={{hasta}}">Siguiente</a>
+                    </li>
+                    {% else %}
+                    <li><a href="./?page={{ datos.next_page_number }}&filtro={{ filtro }}&from={{desde}}">Siguiente</a>
+                    </li>
+                    {% endif %}
+                    {% else %}
+                    {% if hasta != None %}
+                    <li><a href="./?page={{ datos.next_page_number }}&filtro={{ filtro }}&to={{hasta}}">Siguiente</a>
+                    </li>
+                    {% else %}
+                    <li><a href="./?page={{ datos.next_page_number }}&filtro={{ filtro }}">Siguiente</a></li>
+                    {% endif %}
+                    {% endif %}
+                    {% endif %}
+                    {% else %}
+                    <li class="disabled"><span>Siguiente</span></li>
+                    {% endif %}
+                </ul>
+                {% endif %}
+            </div>-->
+
+            <div class="tab-pane container active" id="menu0">
+                <div class="contenedor-clientes">
+                <div class="col-md-12">
+                    <div class="contenedor-pedido">
+                        {% if espera %}
+                        <table class="table clientes">
+                            <thead>
+                                <tr>
+                                    <th style="font-size: 20px;">Hay <span>{{espera.paginator.count}}</span> pedidos en espera</th>
+                                </tr>
+                            </thead>
+                            </table>
+                            <table class="table clientes">
+                            <tbody>
+                            {% for data in espera %}
+
+                                <div class="div-contenedor-pedido">
+                                    <h4 class="indice">{{ forloop.counter }}</h4>
+                                    <a class="contenedor open-modal" data-url="/buscar_pedido/{{data.id_pedido}}">
+                                        <div class="div-pedido">
+                                            <div class="contener-columnaI">
+                                                {% if data.cliente.usuario.foto != " " and data.cliente.usuario.photo_url %}
+                                                    <img src={{data.cliente.usuario.photo_url}}>
+                                                {% else %}
+                                                    <img src="{% static 'img/iconos_administrador/avatar.png' %}">
+                                                {% endif %}
+                                            </div>
+                                            <div class="contener-columna">
+                                                <h6 class="nombre-pedido">{{data.cliente.nombre}} {{data.cliente.apellido}}</h6>
+                                                <p class="direccion-pedido">{{data.estado}}</p>
+                                                <p class="direccion-pedido">{{data.tipo_entrega}}</p>
+                                                <p class="direccion-pedido">${{data.total|floatformat:2 }}</p>
+                                                {% if data.estado == "Recibido" %}
+                                                    <div class="telefono-pedido">
+                                                        <img src="{% static 'img/iconos_administrador/red-dot.png' %}">
+                                                    </div>
+                                                {% elif data.estado == "Enviado" %}
+                                                    <div class="telefono-pedido">
+                                                        <img src="{% static 'img/iconos_administrador/green-dot.png' %}">
+                                                    </div>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                        {% else %}
+                        <h3 style="display: table;">No existen datos para presentar</h3>
+                        {% endif %}
+                    </div></div>
+                  </div>
+
+                <!--{% if espera.has_other_pages %}
+                <ul class="pagination">
+                    {% if espera.has_previous %}
+                        {% if filtro == None %}
+                            {% if desde != None %}
+                                {% if hasta != None %}
+                                    <li><a href="./?page0={{ espera.previous_page_number }}&from={{desde}}&to={{hasta}}">Anterior</a>
+                                    </li>
+                                {% else %}
+                                    <li><a href="./?page0={{ espera.previous_page_number }}&from={{desde}}">Anterior</a></li>
+                                {% endif %}
+                            {% else %}
+                                {% if hasta != None %}
+                                    <li><a href="./?page0={{ espera.previous_page_number }}&filtro={{ filtro }}&to={{hasta}}">Anterior</a></li>
+                                {% else %}
+                                    <li><a href="./?page0={{ espera.previous_page_number }}">Anterior</a></li>
+                                {% endif %}
+                            {% endif %}
+                        {% else %}
+                            {% if desde != None %}
+                                {% if hasta != None %}
+                                    <li><a href="./?page0={{ espera.previous_page_number }}&filtro={{ filtro }}&from={{desde}}&to={{hasta}}">Anterior</a></li>
+                                {% else %}
+                                    <li><a href="./?page0={{ espera.previous_page_number }}&filtro={{ filtro }}&from={{desde}}">Anterior</a></li>
+                                {% endif %}
+                            {% else %}
+                                {% if hasta != None %}
+                                    <li><a href="./?page0={{ espera.previous_page_number }}&filtro={{ filtro }}&to={{hasta}}">Anterior</a></li>
+                                {% else %}
+                                    <li><a href="./?page0={{ espera.previous_page_number }}&filtro={{ filtro }}">Anterior</a></li>
+                                {% endif %}
+                            {% endif %}
+                        {% endif %}
+                    {% else %}
+                        <li class="disabled"><span>Anterior</span></li>
+                    {% endif %}
+                    <li class="active"><span>{{ espera.number }} <span class="sr-only">(current)</span></span></li>
+                    {% if espera.has_next %}
+                    {% if filtro == None %}
+                    {% if desde != None %}
+                    {% if hasta != None %}
+                    <li><a href="./?page0={{ espera.next_page_number }}&from={{desde}}&to={{hasta}}">Siguiente</a>
+                    </li>
+                    {% else %}
+                    <li><a href="./?page0={{ espera.next_page_number }}&from={{desde}}">Siguiente</a></li>
+                    {% endif %}
+                    {% else %}
+                    {% if hasta != None %}
+                    <li><a
+                            href="./?page0={{ espera.next_page_number }}&filtro={{ filtro }}&to={{hasta}}">Siguiente</a>
+                    </li>
+                    {% else %}
+                    <li><a href="./?page0={{ espera.next_page_number }}">Siguiente</a></li>
+                    {% endif %}
+                    {% endif %}
+                    {% else %}
+                    {% if desde != None %}
+                    {% if hasta != None %}
+                    <li><a href="./?page0={{ espera.next_page_number }}&filtro={{ filtro }}&from={{desde}}&to={{hasta}}">Siguiente</a></li>
+                    {% else %}
+                    <li><a href="./?page0={{ espera.next_page_number }}&filtro={{ filtro }}&from={{desde}}">Siguiente</a></li>
+                    {% endif %}
+                    {% else %}
+                    {% if hasta != None %}
+                    <li><a href="./?page0={{ espera.next_page_number }}&filtro={{ filtro }}&to={{hasta}}">Siguiente</a></li>
+                    {% else %}
+                    <li><a href="./?page0={{ espera.next_page_number }}&filtro={{ filtro }}">Siguiente</a></li>
+                    {% endif %}
+                    {% endif %}
+                    {% endif %}
+                    {% else %}
+                    <li class="disabled"><span>Siguiente</span></li>
+                    {% endif %}
+                </ul>
+                {% endif %}-->
+            </div>
+
+            <div class="tab-pane container fade" id="menu1">
+                <div class="contenedor-clientes">
+                    {% if recibidos %}
+                    <table class="table clientes">
+                        <thead>
+                            <tr>
+                                <th>Código</th>
+                                <th>Fecha</th>
+                                <th>Hora</th>
+                                <th>Cliente</th>
+                                <th>Total</th>
+                                <th>Lugar de entrega</th>
+                                <th>Forma de pago</th>
+                                <th>Observaciones</th>
+                                <th>Detalle</th>
+                                <th>Estatus</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for data in recibidos %}
+                            <tr>
+                                <td>{{data.id_pedido|stringformat:"03d"}}</td>
+                                <td>{{data.fecha|date:"d/m/Y"}}</td>
+                                <td>{{data.fecha|date:"H:i"}}</td>
+                                <td>{{data.cliente.nombre}} {{data.cliente.apellido}}</td>
+                                <td>${{data.total|floatformat:2 }}</td>
+                                <td>{{data.tipo_entrega}}</td>
+                                <td>{{data.tipo_pago}}</td>
+                                <td>{{data.observacion}}</td>
+                                <td>
+                                    <a class="contenedor open-modal" data-url="/detalle_pedido/{{data.id_pedido}}">
+                                        Ver detalle
+                                    </a>
+                                </td>
+                                <td>{{data.estado}}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    <div class="total-clientes">
+                        <span>Total Recibidos: </span><span>{{recibidos.paginator.count}}</span>
+                        <p>
+                            <span>Total Venta: </span><span>${{total1}}</span>
+                        </p>
+                    </div>
+                    {% else %}
+                    <h3 style="display: table;">No existen datos para presentar</h3>
+                    {% endif %}
+                </div>
+                {% if recibidos.has_other_pages %}
+                <ul class="pagination">
+                    {% if recibidos.has_previous %}
+                    {% if filtro == None %}
+                    {% if desde != None %}
+                    {% if hasta != None %}
+                    <li><a href="./?page1={{ recibidos.previous_page_number }}&from={{desde}}&to={{hasta}}">Anterior</a>
+                    </li>
+                    {% else %}
+                    <li><a href="./?page1={{ recibidos.previous_page_number }}&from={{desde}}">Anterior</a></li>
+                    {% endif %}
+                    {% else %}
+                    {% if hasta != None %}
+                    <li><a href="./?page1={{ recibidos.previous_page_number }}&filtro={{ filtro }}&to={{hasta}}">Anterior</a>
+                    </li>
+                    {% else %}
+                    <li><a href="./?page1={{ recibidos.previous_page_number }}">Anterior</a></li>
+                    {% endif %}
+                    {% endif %}
+                    {% else %}
+                    {% if desde != None %}
+                    {% if hasta != None %}
+                    <li><a href="./?page1={{ recibidos.previous_page_number }}&filtro={{ filtro }}&from={{desde}}&to={{hasta}}">Anterior</a> </li>
+                    {% else %}
+                    <li><a
+                            href="./?page1={{ recibidos.previous_page_number }}&filtro={{ filtro }}&from={{desde}}">Anterior</a>
+                    </li>
+                    {% endif %}
+                    {% else %}
+                    {% if hasta != None %}
+                    <li><a
+                            href="./?page1={{ recibidos.previous_page_number }}&filtro={{ filtro }}&to={{hasta}}">Anterior</a>
+                    </li>
+                    {% else %}
+                    <li><a href="./?page1={{ recibidos.previous_page_number }}&filtro={{ filtro }}">Anterior</a></li>
+                    {% endif %}
+                    {% endif %}
+                    {% endif %}
+                    {% else %}
+                    <li class="disabled"><span>Anterior</span></li>
+                    {% endif %}
+                    <li class="active"><span>{{ recibidos.number }} <span class="sr-only">(current)</span></span></li>
+                    {% if recibidos.has_next %}
+                    {% if filtro == None %}
+                    {% if desde != None %}
+                    {% if hasta != None %}
+                    <li><a href="./?page1={{ recibidos.next_page_number }}&from={{desde}}&to={{hasta}}">Siguiente</a>
+                    </li>
+                    {% else %}
+                    <li><a href="./?page1={{ recibidos.next_page_number }}&from={{desde}}">Siguiente</a></li>
+                    {% endif %}
+                    {% else %}
+                    {% if hasta != None %}
+                    <li><a
+                            href="./?page1={{ recibidos.next_page_number }}&filtro={{ filtro }}&to={{hasta}}">Siguiente</a>
+                    </li>
+                    {% else %}
+                    <li><a href="./?page1={{ recibidos.next_page_number }}">Siguiente</a></li>
+                    {% endif %}
+                    {% endif %}
+                    {% else %}
+                    {% if desde != None %}
+                    {% if hasta != None %}
+                    <li><a
+                            href="./?page1={{ recibidos.next_page_number }}&filtro={{ filtro }}&from={{desde}}&to={{hasta}}">Siguiente</a>
+                    </li>
+                    {% else %}
+                    <li><a
+                            href="./?page1={{ recibidos.next_page_number }}&filtro={{ filtro }}&from={{desde}}">Siguiente</a>
+                    </li>
+                    {% endif %}
+                    {% else %}
+                    {% if hasta != None %}
+                    <li><a
+                            href="./?page1={{ recibidos.next_page_number }}&filtro={{ filtro }}&to={{hasta}}">Siguiente</a>
+                    </li>
+                    {% else %}
+                    <li><a href="./?page1={{ recibidos.next_page_number }}&filtro={{ filtro }}">Siguiente</a></li>
+                    {% endif %}
+                    {% endif %}
+                    {% endif %}
+                    {% else %}
+                    <li class="disabled"><span>Siguiente</span></li>
+                    {% endif %}
+                </ul>
+                {% endif %}
+            </div>
+            <div class="tab-pane container fade" id="menu2">
+                <div class="contenedor-clientes">
+                    {% if enviados %}
+                    <table class="table clientes">
+                        <thead>
+                            <tr>
+                                <th>Código</th>
+                                <th>Fecha</th>
+                                <th>Hora</th>
+                                <th>Cliente</th>
+                                <th>Total</th>
+                                <th>Lugar de entrega</th>
+                                <th>Forma de pago</th>
+                                <th>Observaciones</th>
+                                <th>Detalle</th>
+                                <th>Estatus</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for data in enviados %}
+                            <tr>
+                                <td>{{data.id_pedido|stringformat:"03d"}}</td>
+                                <td>{{data.fecha|date:"d/m/Y"}}</td>
+                                <td>{{data.fecha|date:"H:i"}}</td>
+                                <td>{{data.cliente.nombre}} {{data.cliente.apellido}}</td>
+                                <td>${{data.total|floatformat:2 }}</td>
+                                <td>{{data.tipo_entrega}}</td>
+                                <td>{{data.tipo_pago}}</td>
+                                <td>{{data.observacion}}</td>
+                                <td>
+                                    <a class="contenedor open-modal" data-url="/detalle_pedido/{{data.id_pedido}}">
+                                        Ver detalle
+                                    </a>
+                                </td>
+                                <td>{{data.estado}}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    <div class="total-clientes">
+                        <span>Total Enviados: </span><span>{{enviados.paginator.count}}</span>
+                        <p>
+                            <span>Total Venta: </span><span>${{total2}}</span>
+                        </p>
+                    </div>
+                    {% else %}
+                    <h3 style="display: table;">No existen datos para presentar</h3>
+                    {% endif %}
+                </div>
+                {% if enviados.has_other_pages %}
+                <ul class="pagination">
+                    {% if enviados.has_previous %}
+                    {% if filtro == None %}
+                    {% if desde != None %}
+                    {% if hasta != None %}
+                    <li><a href="./?page2={{ enviados.previous_page_number }}&from={{desde}}&to={{hasta}}">Anterior</a>
+                    </li>
+                    {% else %}
+                    <li><a href="./?page2={{ enviados.previous_page_number }}&from={{desde}}">Anterior</a></li>
+                    {% endif %}
+                    {% else %}
+                    {% if hasta != None %}
+                    <li><a
+                            href="./?page2={{ enviados.previous_page_number }}&filtro={{ filtro }}&to={{hasta}}">Anterior</a>
+                    </li>
+                    {% else %}
+                    <li><a href="./?page2={{ enviados.previous_page_number }}">Anterior</a></li>
+                    {% endif %}
+                    {% endif %}
+                    {% else %}
+                    {% if desde != None %}
+                    {% if hasta != None %}
+                    <li><a
+                            href="./?page2={{ enviados.previous_page_number }}&filtro={{ filtro }}&from={{desde}}&to={{hasta}}">Anterior</a>
+                    </li>
+                    {% else %}
+                    <li><a
+                            href="./?page2={{ enviados.previous_page_number }}&filtro={{ filtro }}&from={{desde}}">Anterior</a>
+                    </li>
+                    {% endif %}
+                    {% else %}
+                    {% if hasta != None %}
+                    <li><a
+                            href="./?page2={{ enviados.previous_page_number }}&filtro={{ filtro }}&to={{hasta}}">Anterior</a>
+                    </li>
+                    {% else %}
+                    <li><a href="./?page2={{ enviados.previous_page_number }}&filtro={{ filtro }}">Anterior</a></li>
+                    {% endif %}
+                    {% endif %}
+                    {% endif %}
+                    {% else %}
+                    <li class="disabled"><span>Anterior</span></li>
+                    {% endif %}
+                    <li class="active"><span>{{ enviados.number }} <span class="sr-only">(current)</span></span></li>
+                    {% if enviados.has_next %}
+                    {% if filtro == None %}
+                    {% if desde != None %}
+                    {% if hasta != None %}
+                    <li><a href="./?page2={{ enviados.next_page_number }}&from={{desde}}&to={{hasta}}">Siguiente</a>
+                    </li>
+                    {% else %}
+                    <li><a href="./?page2={{ enviados.next_page_number }}&from={{desde}}">Siguiente</a></li>
+                    {% endif %}
+                    {% else %}
+                    {% if hasta != None %}
+                    <li><a
+                            href="./?page2={{ enviados.next_page_number }}&filtro={{ filtro }}&to={{hasta}}">Siguiente</a>
+                    </li>
+                    {% else %}
+                    <li><a href="./?page2={{ enviados.next_page_number }}">Siguiente</a></li>
+                    {% endif %}
+                    {% endif %}
+                    {% else %}
+                    {% if desde != None %}
+                    {% if hasta != None %}
+                    <li><a
+                            href="./?page2={{ enviados.next_page_number }}&filtro={{ filtro }}&from={{desde}}&to={{hasta}}">Siguiente</a>
+                    </li>
+                    {% else %}
+                    <li><a
+                            href="./?page2={{ enviados.next_page_number }}&filtro={{ filtro }}&from={{desde}}">Siguiente</a>
+                    </li>
+                    {% endif %}
+                    {% else %}
+                    {% if hasta != None %}
+                    <li><a
+                            href="./?page2={{ enviados.next_page_number }}&filtro={{ filtro }}&to={{hasta}}">Siguiente</a>
+                    </li>
+                    {% else %}
+                    <li><a href="./?page2={{ enviados.next_page_number }}&filtro={{ filtro }}">Siguiente</a></li>
+                    {% endif %}
+                    {% endif %}
+                    {% endif %}
+                    {% else %}
+                    <li class="disabled"><span>Siguiente</span></li>
+                    {% endif %}
+                </ul>
+                {% endif %}
+            </div>
+            <div class="tab-pane container fade" id="menu3">
+                <div class="contenedor-clientes">
+                    {% if entregados %}
+                    <table class="table clientes">
+                        <thead>
+                            <tr>
+                                <th>Código</th>
+                                <th>Fecha</th>
+                                <th>Hora</th>
+                                <th>Cliente</th>
+                                <th>Total</th>
+                                <th>Lugar de entrega</th>
+                                <th>Forma de pago</th>
+                                <th>Observaciones</th>
+                                <th>Detalle</th>
+                                <th>Estatus</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for data in entregados %}
+                            <tr>
+                                <td>{{data.id_pedido|stringformat:"03d"}}</td>
+                                <td>{{data.fecha|date:"d/m/Y"}}</td>
+                                <td>{{data.fecha|date:"H:i"}}</td>
+                                <td>{{data.cliente.nombre}} {{data.cliente.apellido}}</td>
+                                <td>${{data.total|floatformat:2 }}</td>
+                                <td>{{data.tipo_entrega}}</td>
+                                <td>{{data.tipo_pago}}</td>
+                                <td>{{data.observacion}}</td>
+                                <td>
+                                    <a class="contenedor open-modal" data-url="/detalle_pedido/{{data.id_pedido}}">
+                                        Ver detalle
+                                    </a>
+                                </td>
+                                <td>{{data.estado}}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    <div class="total-clientes">
+                        <span>Total Entregados: </span><span>{{entregados.paginator.count}}</span>
+                        <p>
+                            <span>Total Venta: </span><span>${{total3}}</span>
+                        </p>
+                    </div>
+                    {% else %}
+                    <h3 style="display: table;">No existen datos para presentar</h3>
+                    {% endif %}
+                </div>
+                {% if entregados.has_other_pages %}
+                <ul class="pagination">
+                    {% if entregados.has_previous %}
+                    {% if filtro == None %}
+                    {% if desde != None %}
+                    {% if hasta != None %}
+                    <li><a
+                            href="./?page3={{ entregados.previous_page_number }}&from={{desde}}&to={{hasta}}">Anterior</a>
+                    </li>
+                    {% else %}
+                    <li><a href="./?page3={{ entregados.previous_page_number }}&from={{desde}}">Anterior</a></li>
+                    {% endif %}
+                    {% else %}
+                    {% if hasta != None %}
+                    <li><a
+                            href="./?page3={{ entregados.previous_page_number }}&filtro={{ filtro }}&to={{hasta}}">Anterior</a>
+                    </li>
+                    {% else %}
+                    <li><a href="./?page3={{ entregados.previous_page_number }}">Anterior</a></li>
+                    {% endif %}
+                    {% endif %}
+                    {% else %}
+                    {% if desde != None %}
+                    {% if hasta != None %}
+                    <li><a
+                            href="./?page3={{ entregados.previous_page_number }}&filtro={{ filtro }}&from={{desde}}&to={{hasta}}">Anterior</a>
+                    </li>
+                    {% else %}
+                    <li><a
+                            href="./?page3={{ entregados.previous_page_number }}&filtro={{ filtro }}&from={{desde}}">Anterior</a>
+                    </li>
+                    {% endif %}
+                    {% else %}
+                    {% if hasta != None %}
+                    <li><a
+                            href="./?page3={{ entregados.previous_page_number }}&filtro={{ filtro }}&to={{hasta}}">Anterior</a>
+                    </li>
+                    {% else %}
+                    <li><a href="./?page3={{ entregados.previous_page_number }}&filtro={{ filtro }}">Anterior</a></li>
+                    {% endif %}
+                    {% endif %}
+                    {% endif %}
+                    {% else %}
+                    <li class="disabled"><span>Anterior</span></li>
+                    {% endif %}
+                    <li class="active"><span>{{ entregados.number }} <span class="sr-only">(current)</span></span></li>
+                    {% if entregados.has_next %}
+                    {% if filtro == None %}
+                    {% if desde != None %}
+                    {% if hasta != None %}
+                    <li><a href="./?page3={{ entregados.next_page_number }}&from={{desde}}&to={{hasta}}">Siguiente</a>
+                    </li>
+                    {% else %}
+                    <li><a href="./?page3={{ entregados.next_page_number }}&from={{desde}}">Siguiente</a></li>
+                    {% endif %}
+                    {% else %}
+                    {% if hasta != None %}
+                    <li><a
+                            href="./?page3={{ entregados.next_page_number }}&filtro={{ filtro }}&to={{hasta}}">Siguiente</a>
+                    </li>
+                    {% else %}
+                    <li><a href="./?page3={{ entregados.next_page_number }}">Siguiente</a></li>
+                    {% endif %}
+                    {% endif %}
+                    {% else %}
+                    {% if desde != None %}
+                    {% if hasta != None %}
+                    <li><a
+                            href="./?page3={{ entregados.next_page_number }}&filtro={{ filtro }}&from={{desde}}&to={{hasta}}">Siguiente</a>
+                    </li>
+                    {% else %}
+                    <li><a
+                            href="./?page3={{ entregados.next_page_number }}&filtro={{ filtro }}&from={{desde}}">Siguiente</a>
+                    </li>
+                    {% endif %}
+                    {% else %}
+                    {% if hasta != None %}
+                    <li><a
+                            href="./?page3={{ entregados.next_page_number }}&filtro={{ filtro }}&to={{hasta}}">Siguiente</a>
+                    </li>
+                    {% else %}
+                    <li><a href="./?page3={{ entregados.next_page_number }}&filtro={{ filtro }}">Siguiente</a></li>
+                    {% endif %}
+                    {% endif %}
+                    {% endif %}
+                    {% else %}
+                    <li class="disabled"><span>Siguiente</span></li>
+                    {% endif %}
+                </ul>
+                {% endif %}
+            </div>
+            <div class="tab-pane container fade" id="menu4">
+                <div class="contenedor-clientes">
+                    {% if devueltos %}
+                    <table class="table clientes">
+                        <thead>
+                            <tr>
+                                <th>Código</th>
+                                <th>Fecha</th>
+                                <th>Hora</th>
+                                <th>Cliente</th>
+                                <th>Total</th>
+                                <th>Lugar de entrega</th>
+                                <th>Forma de pago</th>
+                                <th>Observaciones</th>
+                                <th>Detalle</th>
+                                <th>Estatus</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for data in devueltos %}
+                            <tr>
+                                <td>{{data.id_pedido|stringformat:"03d"}}</td>
+                                <td>{{data.fecha|date:"d/m/Y"}}</td>
+                                <td>{{data.fecha|date:"H:i"}}</td>
+                                <td>{{data.cliente.nombre}} {{data.cliente.apellido}}</td>
+                                <td>${{data.total|floatformat:2 }}</td>
+                                <td>{{data.tipo_entrega}}</td>
+                                <td>{{data.tipo_pago}}</td>
+                                <td>{{data.observacion}}</td>
+                                <td>
+                                    <a class="contenedor open-modal" data-url="/detalle_pedido/{{data.id_pedido}}">
+                                        Ver detalle
+                                    </a>
+                                </td>
+                                <td>{{data.estado}}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    <div class="total-clientes">
+                        <span># Devueltos: </span><span>{{devueltos.paginator.count}}</span>
+                        <p>
+                            <span>Valor Devueltos: </span><span>${{total4}}</span>
+                        </p>
+                    </div>
+                    {% else %}
+                    <h3 style="display: table;">No existen datos para presentar</h3>
+                    {% endif %}
+                </div>
+                {% if devueltos.has_other_pages %}
+                <ul class="pagination">
+                    {% if devueltos.has_previous %}
+                    {% if filtro == None %}
+                    {% if desde != None %}
+                    {% if hasta != None %}
+                    <li><a href="./?page4={{ devueltos.previous_page_number }}&from={{desde}}&to={{hasta}}">Anterior</a>
+                    </li>
+                    {% else %}
+                    <li><a href="./?page4={{ devueltos.previous_page_number }}&from={{desde}}">Anterior</a></li>
+                    {% endif %}
+                    {% else %}
+                    {% if hasta != None %}
+                    <li><a
+                            href="./?page4={{ devueltos.previous_page_number }}&filtro={{ filtro }}&to={{hasta}}">Anterior</a>
+                    </li>
+                    {% else %}
+                    <li><a href="./?page4={{ devueltos.previous_page_number }}">Anterior</a></li>
+                    {% endif %}
+                    {% endif %}
+                    {% else %}
+                    {% if desde != None %}
+                    {% if hasta != None %}
+                    <li><a
+                            href="./?page4={{ devueltos.previous_page_number }}&filtro={{ filtro }}&from={{desde}}&to={{hasta}}">Anterior</a>
+                    </li>
+                    {% else %}
+                    <li><a
+                            href="./?page4={{ devueltos.previous_page_number }}&filtro={{ filtro }}&from={{desde}}">Anterior</a>
+                    </li>
+                    {% endif %}
+                    {% else %}
+                    {% if hasta != None %}
+                    <li><a
+                            href="./?page4={{ devueltos.previous_page_number }}&filtro={{ filtro }}&to={{hasta}}">Anterior</a>
+                    </li>
+                    {% else %}
+                    <li><a href="./?page4={{ devueltos.previous_page_number }}&filtro={{ filtro }}">Anterior</a></li>
+                    {% endif %}
+                    {% endif %}
+                    {% endif %}
+                    {% else %}
+                    <li class="disabled"><span>Anterior</span></li>
+                    {% endif %}
+                    <li class="active"><span>{{ devueltos.number }} <span class="sr-only">(current)</span></span></li>
+                    {% if devueltos.has_next %}
+                    {% if filtro == None %}
+                    {% if desde != None %}
+                    {% if hasta != None %}
+                    <li><a href="./?page4={{ devueltos.next_page_number }}&from={{desde}}&to={{hasta}}">Siguiente</a>
+                    </li>
+                    {% else %}
+                    <li><a href="./?page4={{ devueltos.next_page_number }}&from={{desde}}">Siguiente</a></li>
+                    {% endif %}
+                    {% else %}
+                    {% if hasta != None %}
+                    <li><a
+                            href="./?page4={{ devueltos.next_page_number }}&filtro={{ filtro }}&to={{hasta}}">Siguiente</a>
+                    </li>
+                    {% else %}
+                    <li><a href="./?page4={{ devueltos.next_page_number }}">Siguiente</a></li>
+                    {% endif %}
+                    {% endif %}
+                    {% else %}
+                    {% if desde != None %}
+                    {% if hasta != None %}
+                    <li><a
+                            href="./?page4={{ devueltos.next_page_number }}&filtro={{ filtro }}&from={{desde}}&to={{hasta}}">Siguiente</a>
+                    </li>
+                    {% else %}
+                    <li><a
+                            href="./?page4={{ devueltos.next_page_number }}&filtro={{ filtro }}&from={{desde}}">Siguiente</a>
+                    </li>
+                    {% endif %}
+                    {% else %}
+                    {% if hasta != None %}
+                    <li><a
+                            href="./?page4={{ devueltos.next_page_number }}&filtro={{ filtro }}&to={{hasta}}">Siguiente</a>
+                    </li>
+                    {% else %}
+                    <li><a href="./?page4={{ devueltos.next_page_number }}&filtro={{ filtro }}">Siguiente</a></li>
+                    {% endif %}
+                    {% endif %}
+                    {% endif %}
+                    {% else %}
+                    <li class="disabled"><span>Siguiente</span></li>
+                    {% endif %}
+                </ul>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endtimezone %}
+
+<div id="modal-div"></div>
+<div id="modalDireccion" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content" style="height: auto; margin: 20%;width: fit-content;">
+            <button type="button" class="close cerrar-modal" data-dismiss="modal">&times;</button>
+            <div class="col-12" style="margin:auto;width: 22rem;">
+                <div id="nombre-establecimiento">
+                    <h3 id="texto-modal" class='nombre-local'
+                        style="padding: 0px !important; padding-bottom: 10px !important;"></h3>
+                </div>
+                <div id="contenedor-mapa">
+
+                </div>
+                <div
+                    style="margin-bottom:1rem;display:flex;justify-content:center;align-items:center;border: 2px solid gray; border-radius: .25rem;">
+                    <div id="ruta" style="text-overflow: ellipsis; white-space: nowrap; overflow: hidden;">
+
+                    </div>
+                    <button class="btn btn-sucess" type="button" onclick="copiar()">Copiar Link</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

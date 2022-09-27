@@ -1,0 +1,222 @@
+{% load static %}
+<style>
+    #body-modal{
+        padding: 2rem 1rem !important;
+    }
+    #resend-btn{
+        margin: auto;
+        text-align: center;
+        display:block;
+        background: linear-gradient(to right, #2153FF, #0F195E);
+        color: white;
+        font-weight: bolder;
+        font-size: 10px;
+        width: 9rem;
+        height: 2.5rem;
+    }
+    .container-fluid {
+        margin-top: 80px;
+        margin-bottom: 80px
+    }
+
+    .card {
+        padding: 20px 0px
+    }
+
+    .fa {
+        font-size: 25px;
+        cursor: pointer
+    }
+
+    input,
+    select {
+        padding: 2px;
+        border: none;
+        border-bottom: 1px solid;
+        box-sizing: border-box;
+        font-size: 14px;
+        text-align: center !important;
+    }
+
+    input:focus,
+    select:focus {
+        -moz-box-shadow: none !important;
+        -webkit-box-shadow: none !important;
+        box-shadow: none !important;
+        border-bottom: 1px solid #00C853;
+        outline-width: 0
+    }
+
+    select option {
+        background-color: #616161
+    }
+
+    select option:focus {
+        background-color: #00C853 !important
+    }
+
+
+    @media screen and (max-width: 768px) {
+        .mob {
+            width: 70%
+        }
+
+        select.mob {
+            width: 50%
+        }
+    }
+</style>
+<script>
+    $(document).ready(function(){
+        $(document).on("submit", "form", function(event){
+            event.preventDefault();
+            $.ajax({
+                type: $(this).attr("method"),
+                beforeSend: function(){
+                    $('.ajax-loader').css("visibility", "visible");
+                },
+                url: $(this).attr("action"),
+                data: new FormData(this),
+                processData: false,
+                contentType: false,
+                success: function (data) {
+                    var modal = $("#modalDiv");
+                    modal.html(data.html);
+                    $("#myModal").modal();
+                    if(data.result=="ok"){
+                        $("#modal").modal('hide');
+                    }
+                },
+                complete: function(){
+                    $('.ajax-loader').css("visibility", "hidden");
+                },
+                error: function (data) {
+                    console.log('An error occurred.');
+                    var modalDiv = $("#modal-div");
+                    modalDiv.html(data.responseText);
+                },
+            });
+        });
+
+
+        $('.add').click(function(){
+            fila=$("#fila").html()
+        $(".list").append(
+            '<div class="mb-2 row justify-content-between px-3">'+
+            fila+
+            '</div>');
+        });
+
+        $(".list").on('click', '.cancel', function(){
+        $(this).parent().parent().remove();
+        });
+
+    });
+</script>
+<div id="modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <!-- Modal content-->
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close cerrar-modal" data-dismiss="modal">&times;</button>
+        </div>
+        <div id="body-modal" class="modal-body mCustomScrollbar">
+        <h5 style="font-weight: bold;color: #0F195E;" class="px-3">Horarios de atención</h5>
+        <form action="horario/{{id}}" method="POST" enctype="multipart/form-data" class="col-md-12">
+        {% csrf_token %}
+        <div class="card border-0">
+            <div class="row px-3">
+                <div class="col-sm-12 list">
+                    {% if data %}
+                    {% for entry in data %}
+                    <div id="fila" class="mb-2 row justify-content-between px-3">
+                        <div class="col-sm-11">
+                            <div class="mb-2 row justify-content-between">
+                                <select name="day" class="mb-2 mob mr-2" required>
+                                    {% if entry.dia == "1" %}
+                                    <option value="1"selected>Lunes</option>
+                                    {% else %}
+                                    <option value="1">Lunes</option>
+                                    {% endif %}
+                                    {% if entry.dia == "2" %}
+                                    <option value="2"selected>Martes</option>
+                                    {% else %}
+                                    <option value="2">Martes</option>
+                                    {% endif %}
+                                    {% if entry.dia == "3" %}
+                                    <option value="3"selected>Miércoles</option>
+                                    {% else %}
+                                    <option value="3">Miércoles</option>
+                                    {% endif %}
+                                    {% if entry.dia == "4" %}
+                                    <option value="4"selected>Jueves</option>
+                                    {% else %}
+                                    <option value="4">Jueves</option>
+                                    {% endif %}
+                                    {% if entry.dia == "5" %}
+                                    <option value="5"selected>Viernes</option>
+                                    {% else %}
+                                    <option value="5">Viernes</option>
+                                    {% endif %}
+                                    {% if entry.dia == "6" %}
+                                    <option value="6"selected>Sábado</option>
+                                    {% else %}
+                                    <option value="6">Sábado</option>
+                                    {% endif %}
+                                    {% if entry.dia == "0" %}
+                                    <option value="0"selected>Domingo</option>
+                                    {% else %}
+                                    <option value="0">Domingo</option>
+                                    {% endif %}
+                                </select>
+                                <div class="mob"> <label>Desde:</label> <input type="time" name="from" value="{{entry.hora_inicio}}" required> </div>
+                                <div class="mob mb-2"> <label>Hasta:</label> <input type="time" name="to" value="{{entry.hora_fin}}" required> </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-1">
+                            <div class="mt-1 cancel fa fa-times text-danger"></div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                    {% else %}
+
+                    <div id="fila" class="mb-2 row justify-content-between px-3">
+                        <div class="col-sm-11">
+                            <div class="mb-2 row justify-content-between">
+                                <select name="day" class="mb-2 mob mr-2" required>
+                                    <option value="1">Lunes</option>
+                                    <option value="2">Martes</option>
+                                    <option value="3">Miércoles</option>
+                                    <option value="4">Jueves</option>
+                                    <option value="5">Viernes</option>
+                                    <option value="6">Sábado</option>
+                                    <option value="0">Domingo</option>
+                                </select>
+                                <div class="mob"> <label>Desde:</label> <input type="time" name="from" required> </div>
+                                <div class="mob mb-2"> <label>Hasta:</label> <input type="time" name="to" required> </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-1">
+                            <div class="mt-1 cancel fa fa-times text-danger"></div>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="row px-3 mt-3">
+                <div class="col-sm-12">
+                    <div class="row px-3">
+                        <div class="fa fa-plus-circle text-success add"></div>
+                        <p class="text-success ml-3 add">Add</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class = "boton1"><button class="btn btn-sucess" id="resend-btn" type=submit>GUARDAR</button></div>
+        </form>
+  </div>
+    </div>
+  </div>
+</div>
+
+<div id="modalDiv"></div>

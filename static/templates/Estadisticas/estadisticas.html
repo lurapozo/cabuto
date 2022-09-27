@@ -1,0 +1,393 @@
+{% load static %}
+{% include 'Shared/header.html' %}
+{% include 'Shared/sidebar.html' %}
+{% include 'Shared/navbar.html' %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/charts.css/dist/charts.min.css">
+<style>
+    h3 {
+        padding-top: 4rem;
+        padding-left: 5%;
+        font-weight: bold;
+        color: #0F195E;
+        margin: auto;
+    }
+
+    .contenedor-stats {
+        margin: auto;
+        padding: 20px 10px;
+        border-radius: 15px;
+        min-width: min-content;
+        max-width: 70%;
+    }
+
+    .notificaciones {
+        text-align: center;
+    }
+
+    thead th {
+        background-color: #FE3A00;
+        color: white;
+        padding: 6px !important;
+        vertical-align: middle !important;
+        line-height: 1rem;
+        border: 0px:
+    }
+
+    tr th:first-child {
+        border-top-left-radius: 7px;
+        border-bottom-left-radius: 7px;
+    }
+
+    tr th:last-child {
+        border-top-right-radius: 7px;
+        border-bottom-right-radius: 7px;
+    }
+
+    tbody td {
+        border-top: 2px solid rgba(15, 25, 94, 0.3) !important;
+        border-bottom: 1px solid rgba(15, 25, 94, 0.3);
+        padding: 1rem !important;
+        vertical-align: middle !important;
+        color: #444242;
+    }
+
+    tr:first-child td {
+        border-top: none !important;
+    }
+
+    table th {
+        border: none !important;
+    }
+
+    .contenedor-filtro {
+        width: 100%;
+        display: flex;
+        justify-content: flex-end;
+    }
+
+    .contenedor-searchbar {
+        display: flex;
+        align-items: center;
+        border-radius: 5px;
+        height: 40px;
+        font-size: 1rem;
+    }
+
+    contenedor-stats {
+        align-items: center;
+        border-radius: 5px;
+        height: 40px;
+        font-size: 1rem;
+    }
+
+    #buscar {
+        background: url("{% static 'img/iconos_administrador/buscar.png' %}") no-repeat scroll #D8D9DD;
+        padding-right: 30px;
+        margin: 20px;
+    }
+
+    .pagination {
+        justify-content: center;
+        margin-top: 10px;
+    }
+
+    .pagination .active {
+        width: 1.6rem;
+        background: #0f195e;
+        color: white;
+        text-align: center;
+        border-radius: 0.5rem;
+        margin: 0px 20px;
+        height: 1.5rem;
+        font-weight: bolder;
+        font-size: 14px;
+        padding-top: 2px;
+    }
+
+    .boton1 .btn {
+        margin: auto;
+        text-align: center;
+        background: linear-gradient(to right, #2153FF, #0F195E);
+        color: white;
+        font-weight: bolder;
+        font-size: 10px;
+        width: 9rem;
+        height: 2.5rem;
+    }
+
+    .boton1 a {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .pagination li:first-child a,
+    .pagination li:last-child a,
+    .pagination li:first-child span,
+    .pagination li:last-child span {
+        color: #0f195e;
+        font-size: 13px;
+    }
+
+    .img-borrar,
+    .img-editar {
+        height: 1rem;
+    }
+
+    .img-producto {
+        width: 3.5rem;
+    }
+
+    .total-clientes {
+        width: 90%;
+        border-top: 3px solid #0F195E;
+        padding-top: 10px;
+        margin-top: 2rem;
+        color: #444242;
+    }
+
+    .total-clientes span:first-child {
+        font-weight: bold;
+        padding-right: 25px;
+        padding-left: 35%;
+        color: #0F195E;
+    }
+
+    .switch>input {
+        opacity: 0;
+    }
+
+    .switch>div {
+        width: 60px;
+        height: 30px;
+        background: #9A9A9A;
+        z-index: 0;
+        cursor: pointer;
+        position: relative;
+        border-radius: 50px;
+        line-height: 40px;
+        text-align: right;
+        padding: 0 10px;
+        color: rgba(0, 0, 0, .5);
+        transition: all 250ms;
+    }
+
+    .switch>input:checked+div {
+        background: lime;
+        text-align: left;
+    }
+
+    .switch>div:before {
+        content: '';
+        display: inline-block;
+        position: absolute;
+        left: 4px;
+        top: 3px;
+        height: 24px;
+        width: 24px;
+        background: white;
+        border-radius: 50%;
+        transition: all 200ms;
+    }
+
+    .switch>input:checked+div:before {
+        content: '';
+        position: absolute;
+        left: 32px;
+        border-radius: 50%;
+    }
+
+    #ColumnProdxPedidos.column {
+        height: 400px;
+        max-width: 1200px;
+        margin: 0 auto;
+        --labels-size: 100px;
+        font-size: small;
+    }
+
+
+    th {
+        overflow: auto;
+    }
+
+    .aaahhh {
+        height: 10000px;
+    }
+
+    #LineaVentas.column {
+        height: 400px;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    p.c {
+        white-space: pre;
+    }
+</style>
+<script type="text/javascript">
+    $(document).ready(function () {
+        var input = document.getElementById("buscar");
+        input.value = "";
+        input.addEventListener("keyup", function (event) {
+            if (event.keyCode === 13) {
+                location = '?busqueda=' + input.value;
+            }
+        });
+    });
+    function cambiarEstado(id) {
+        $.ajax({
+            beforeSend: function () {
+                $('.ajax-loader').css("visibility", "visible");
+            },
+            url: "eliminar_ofertas/" + id,
+            success: function (data) {
+                var modalDiv = $("#modal-div");
+                modalDiv.html(data.html);
+                $("#myModal").modal();
+            },
+            complete: function () {
+                $('.ajax-loader').css("visibility", "hidden");
+            }
+        });
+    }
+</script>
+
+
+<div class="col-12">
+    <div class="col-md-12">
+        <h3 class="row">ESTADISTICAS</h3>
+        <a href="/estadisticas"><button> Reset </button></a>
+        <div class="row contenedor-filtro">
+        </div>
+        <div class="contenedor-stats row">
+            <div class="col">
+                <p> PRODUCTOS: {{cantProductos}}</p>
+            </div>
+            <div class="col">
+                <p> CUPONES: {{cantCupones}}</p>
+            </div>
+            <div class="col">
+                <p> PEDIDOS: {{cantPedidos}}</p>
+            </div>
+            <div class="col">
+                <p> VENTAS:</p>
+            </div>
+        </div>
+    </div>
+    <!--GRAFICO 1-->
+    <div class="contenedor-estadisticas">
+        <div class="row">
+            {% if prod == "-1" %}
+                <form>
+                    <label>Fecha inicio:</label>
+                    <input type='date' class="form-control" id='fromDate' name="from" required />
+                    <label>Fecha fin:</label>
+                    <input type='date' class="form-control" id='toDate' name="to" required />
+                    <input type="submit" value="Seleccionar">
+                </form>
+            {% else %}
+                <form>
+                    <label>Fecha inicio:</label>
+                    <input type='date' class="form-control" id='fromDate' name="from" required />
+                    <label>Fecha fin:</label>
+                    <input type='date' class="form-control" id='toDate' name="to" required />
+                    <input type="number" value={{prod}} name="prod" hidden></input>
+                    <input type="submit" value="Seleccionar">
+                </form>
+            {% endif %}
+            <div class="col-12 ">
+                <table id="ColumnProdxPedidos" class="charts-css column show-heading show-primary-axis show-labels">
+                    <caption> Top 10 Productos: </caption>
+                    <tbody>
+                        {% for key, value in productosDiccionarioFiltrado.items %}
+                        <tr>
+                            <th class="aaahhh" scope="row"> {{key}} </th>
+                            <td style="--size: {{value}}/{{prodmasalto}}"> <span class="data"> ${{value}} </span>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="contenedor-stats row">
+        <div class="col">
+            <p class="c">
+        </div>
+    </div>
+    <!--GRAFICO 2-->
+    <div class="contenedor-estadisticas">
+        <div class="row">
+            <div class="col-12">
+                <table class="charts-css column show-heading show-primary-axis show-labels" id="LineaVentas">
+                    <caption> Ganancias anuales por mes ({{annusMonstrar}}):</caption>
+                    <tbody>
+                        {% for key, value in mesesDiccionario.items %}
+                        <tr>
+                            <th scope="row"> {{key}} </th>
+                            {% if mesmasalto < 1 %}
+                            <td style="--size: {{value}}/10"> <span class="data"> ${{value}} </span>
+                            {% else %}
+                            <td style="--size: {{value}}/{{mesmasalto}}"> <span class="data"> ${{value}} </span>
+                            {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="contenedor-stats row">
+        <div class="col">
+            <p class="c">
+        </div>
+    </div>
+    <!--GRAFICO 3-->
+    {% if from == 'a' %}
+        <input list="brow" name="producto" id="producto" onchange="location = '?prod='+this.value;">
+        <datalist id="brow" name="producto" required>
+            {% for producto in productos %}
+            <option class="input" value={{producto.id_producto}} name="producto">{{producto.nombre}}</option>
+            {% endfor %}
+        </datalist>
+        <input type="submit" value="Seleccionar">
+    {% else %}
+        <input list="brow" name="producto" id="producto" onchange="location = '?from={{from}}&to={{to}}&prod='+this.value;">
+        <datalist id="brow" name="producto" required>
+            {% for producto in productos %}
+            <option class="input" value={{producto.id_producto}} name="producto">{{producto.nombre}}</option>
+            {% endfor %}
+        </datalist>
+        <input type="submit" value="Seleccionar">
+    {% endif %}
+    <div class="contenedor-estadisticas">
+        <div class="row">
+            <div class="col-12">
+                <table class="charts-css column show-heading show-primary-axis show-labels" id="LineaVentas">
+                    <caption> Ganancias anuales del Producto por mes ({{annusMonstrar}}): </caption>
+
+                    {% if mesesDiccionario2 %}
+                    <tbody>
+                        {% for key, value in mesesDiccionario2.items %}
+                        <tr>
+                            <th scope="row"> {{key}} </th>
+                            <td style="--size: {{value}}/{{mesmasalto2}}"> <span class="data"> ${{value}} </span>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                    {% else %}
+                    <tbody>
+                        <h1>NO HAY DATOS PARA MOSTRAR</h1>
+                    </tbody>
+                    {% endif %}
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div id="modal-div"></div>

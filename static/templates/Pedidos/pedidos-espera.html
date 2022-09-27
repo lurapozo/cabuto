@@ -1,0 +1,270 @@
+{% load static %}
+{% include 'Shared/header.html' %}
+{% include 'Shared/sidebar.html' %}
+{% include 'Shared/navbar.html' %}
+
+<style>
+    h3 {
+        padding-top: 4rem;
+        padding-left: 5%;
+        font-weight: bold;
+        color: #0F195E;
+        margin: auto;
+    }
+    .contenedor-filtro{
+        width: 100%;
+        display: flex;
+        justify-content: flex-end;
+    }
+    .contenedor-searchbar{
+        display: flex;
+        align-items: center;
+        border-radius: 5px;
+        height: 40px;
+        font-size: 1rem;
+    }
+    .contenedor{
+        width: 95%;
+    }
+    .div-pedido{
+        display: flex;
+        align-items: center;
+        box-shadow: 3px 3px 3px 3px #c2c2c2;
+        border-radius: 15px;
+        margin: 20px 20px;
+        min-width: 29rem;
+        min-height: 5rem;
+        cursor: pointer;
+    }
+    .contener-columna{
+        display: flex;
+        position: relative;
+        left: 6%;
+        width: 75%;
+        align-items: center;
+    }
+    .contener-columna .nombre-pedido{
+        font-weight: bold;
+        color: #0F195E;
+        width: 45%;
+        padding: 0px 10px;
+        margin: 0px;
+    }
+    .contener-columna .direccion-pedido{
+        font-family: 'MyriadPro-Light' !important;
+        font-style: normal;
+        color: gray;
+        font-weight: bolder;
+        font-size: 0.9rem;
+        width: 25%;
+        margin: 0px;
+    }
+
+    .contener-columna .telefono-pedido{
+        margin-bottom: 2px;
+        margin-top: 0px;
+        display: flex;
+        justify-content: space-around;
+    }
+
+    .contener-columna .telefono-pedido img{
+        height: 15px;
+        margin-top: 2px;
+    }
+    .div-contenedor-pedido{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+    }
+    .indice{
+        font-weight: bold;
+        color: #0F195E;
+        margin: 0px;
+    }
+
+    .contener-columna .telefono-pedido p{
+        margin: 0px 0px 0px 5px;
+        font-family: 'MyriadPro-Light' !important;
+        font-style: normal;
+        color: #87868A;
+        font-weight: bolder;
+        font-size: 0.75rem;
+    }
+    .contener-columnaI{
+        float: right;
+        position: relative;
+        padding-right: 20px;
+        text-align: right;
+        left: 5%;
+    }
+    .contener-columnaI img{
+        height: 3.5rem;
+        width: 3.5rem;
+        border-radius: 45%;
+    }
+    .titulo{
+        margin-bottom: 20px;
+    }
+    .nombre-cliente{
+        font-weight: bolder;
+        margin-bottom: 1rem;
+        color: #0F195E;
+        padding: 0px;
+    }
+    #contenedor-mapa{
+        height: 15rem;
+        width: auto;
+        margin: auto;
+        margin-bottom: 10px;
+    }
+    .cerrar-modal{
+        margin-top: 20px;
+        text-align: end;
+        margin-right: 20px;
+    }
+</style>
+<script type="text/javascript">
+    $(document).ready(function() {
+        var modalDiv = $("#modal-div");
+        let audio=document.querySelector("#audio");
+        if("{{datos.count}}"==0){
+            audio.pause();
+        }
+        audio.addEventListener('ended', function() {
+            this.currentTime = 0;
+            this.play();
+        }, false);
+        $(".open-modal").on("click", function() {
+          $.ajax({
+            beforeSend: function(){
+                $('.ajax-loader').css("visibility", "visible");
+            },
+            url: $(this).attr("data-url"),
+            success: function(data) {
+                modalDiv.html(data);
+                $("#myModal").modal();
+            },
+            complete: function(){
+                $('.ajax-loader').css("visibility", "hidden");
+            }
+          });
+        });
+        setTimeout(function(){ location="" }, 300000);
+    });
+    function ubicacion(nombre,latitud, longitud){
+
+        var nombreLocal = document.getElementById("texto-modal");
+        console.log(nombreLocal);
+        nombreLocal.innerHTML =nombre;
+        var link = document.getElementById("ruta");
+        console.log(link);
+        link.innerHTML ="https://www.google.com/maps/search/?api=1&query="+latitud+","+longitud;
+        var myLatLng = new google.maps.LatLng(latitud, longitud);
+        var mapOptions = {
+            zoom: 17,
+            center: myLatLng,
+            mapTypeId: google.maps.MapTypeId.RoadMap
+        };
+        var map = new google.maps.Map(document.getElementById('contenedor-mapa'),mapOptions);
+        new google.maps.Marker({
+            position: myLatLng,
+            map,
+        });
+    }
+    function copiar(){
+        var codigoACopiar = document.getElementById('ruta');
+        var seleccion = document.createRange();
+        seleccion.selectNodeContents(codigoACopiar);
+        window.getSelection().removeAllRanges();
+        window.getSelection().addRange(seleccion);
+        var res=document.execCommand('copy')
+        if(res){
+            alert("Se ha copiado el link de la ubicación al portapapeles")
+        }
+        window.getSelection().removeRange(seleccion);
+    }
+    function confirmar(id,estado){
+        if(estado=='Enviado'){
+            if(confirm('¿Desea confirmar que el pedido ha sido entregado?')){
+                location = 'confirmar_pedido/'+id;
+            }else{
+                return false
+            }
+        }else{
+            if(confirmacion=confirm('¿Desea confirmar que el pedido ha sido enviado?')){
+                location = 'confirmar_pedido/'+id;
+            }else{
+                return false
+            }
+        }
+
+    }
+</script>
+<div class="col-12">
+  <div class="col-md-12">
+    <h3 class="row titulo">PEDIDOS EN ESPERA</h3>
+    <div class="contenedor-pedido">
+        {% if datos %}
+        {% for data in datos %}
+        <div class="div-contenedor-pedido">
+            <h4 class="indice">{{ forloop.counter }}</h4>
+            <a class="contenedor open-modal" data-url="/buscar_pedido/{{data.id_pedido}}">
+                <div class="div-pedido">
+                    <div class="contener-columnaI">
+                        {% if data.cliente.usuario.foto != " " and data.cliente.usuario.photo_url %}
+                            <img src={{data.cliente.usuario.photo_url}}>
+                        {% else %}
+                            <img src="{% static 'img/iconos_administrador/avatar.png' %}">
+                        {% endif %}
+                    </div>
+                    <div class="contener-columna">
+                        <h6 class="nombre-pedido">{{data.cliente.nombre}} {{data.cliente.apellido}}</h6>
+                        <p class="direccion-pedido">{{data.estado}}</p>
+                        <p class="direccion-pedido">{{data.tipo_entrega}}</p>
+                        <p class="direccion-pedido">${{data.total|floatformat:2 }}</p>
+                        {% if data.estado == "Recibido" %}
+                            <div class="telefono-pedido">
+                                <img src="{% static 'img/iconos_administrador/red-dot.png' %}">
+                            </div>
+                        {% elif data.estado == "Enviado" %}
+                            <div class="telefono-pedido">
+                                <img src="{% static 'img/iconos_administrador/green-dot.png' %}">
+                            </div>
+                        {% endif %}
+
+                    </div>
+                </div>
+            </a>
+        </div>
+        {% endfor %}
+        {% else %}
+        <h3 style="display: table;">No existen datos para presentar</h3>
+        {% endif %}
+    </div>
+  </div>
+</div>
+<audio src="https://www.bensound.com/bensound-music/bensound-theelevatorbossanova.mp3" id="audio" autoplay></audio>
+<div id="modal-div"></div>
+<div id="modalDireccion" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <!-- Modal content-->
+    <div class="modal-content" style="height: auto; margin: 20%;width: fit-content;">
+        <button type="button" class="close cerrar-modal" data-dismiss="modal">&times;</button>
+      <div class="col-12" style="margin:auto;width: 22rem;">
+            <div id="nombre-establecimiento">
+                <h3 id="texto-modal" class='nombre-local' style="padding: 0px !important; padding-bottom: 10px !important;"></h3>
+            </div>
+            <div id="contenedor-mapa">
+
+            </div>
+            <div style="margin-bottom:1rem;display:flex;justify-content:center;align-items:center;border: 2px solid gray; border-radius: .25rem;">
+                <div id="ruta" style="text-overflow: ellipsis; white-space: nowrap; overflow: hidden;">
+
+                </div>
+                <button class="btn btn-sucess" type="button" onclick="copiar()">Copiar Link</button>
+            </div>
+      </div>
+    </div>
+  </div>
+</div>

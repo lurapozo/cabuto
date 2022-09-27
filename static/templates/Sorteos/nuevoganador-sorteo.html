@@ -1,0 +1,231 @@
+{% load static %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/css/bootstrap-select.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.14/js/bootstrap-select.min.js"></script>
+
+<style>
+    h3 {
+        padding-right: 10px;
+        padding-left: 5%;
+        font-weight: bold;
+        color: #0F195E;
+    }
+
+    .contenedor-notificaciones {
+        margin: auto;
+        padding: 20px 10px;
+        border-radius: 15px;
+        min-width: min-content;
+        max-width: 95%;
+    }
+
+    .notificaciones-texto {
+        display: flex;
+        justify-content: flex-start;
+        padding-top: 4rem;
+        align-items: center;
+    }
+
+    .notificaciones-texto h5 {
+        color: #FE3A00;
+        font-size: 15px;
+    }
+
+    .contenedor-imagen,
+    .contenedor-texto {
+        display: block;
+    }
+
+    .imagen {
+        height: 15rem;
+        width: 15rem;
+        text-align: center;
+        background-color: #EDEEF0;
+        border-radius: 10px;
+        display: flex;
+        margin: auto;
+        margin-bottom: 10px;
+    }
+
+    .imagen img {
+        width: auto;
+        height: 20%;
+        margin: auto;
+    }
+
+    .contenedor-searchbar {
+        display: flex;
+        align-items: center;
+        border-radius: 5px;
+        height: 40px;
+        font-size: 1rem;
+    }
+
+    .boton1 .btn,
+    #nuevo-btn {
+        margin: auto;
+        text-align: center;
+        display: block;
+        background: linear-gradient(to right, #2153FF, #0F195E);
+        color: white;
+        font-weight: bolder;
+        font-size: 10px;
+        width: 9rem;
+        height: 2.5rem;
+    }
+
+    #nuevo-btn {
+        overflow: hidden;
+        position: relative;
+    }
+
+    #fromDate,
+    #toDate {
+        color: #0F195E;
+        background: #D8D9DD;
+    }
+
+    #nuevo-btn input.upload {
+        position: absolute;
+        top: 0;
+        right: 0;
+        margin: 0;
+        padding: 0;
+        font-size: 20px;
+        cursor: pointer;
+        opacity: 0;
+        filter: alpha(opacity=0);
+    }
+
+    #nuevo-btn p {
+        color: white;
+        margin: 5px;
+        font-weight: bolder;
+        font-size: 10px;
+        font-family: inherit;
+    }
+
+    .input-container .input,
+    select {
+        background: #EDEEF0;
+    }
+
+    .notificaciones-link {
+        cursor: pointer;
+    }
+
+    .fila {
+        justify-content: space-between;
+        max-width: 100%;
+        margin: 0;
+    }
+
+    .fila .input-container {
+        width: 45%;
+    }
+</style>
+<script type="text/javascript">
+
+    $(document).ready(function() {
+        $("#guardar-btn").click(function() {
+    	    if (verificarCampos()) {
+                
+    		    $("#form").submit()
+                $('.ajax-loader').css("visibility", "visible");
+        	}
+        });
+        $('.notificaciones-link').click(function() {
+            limpiarCampos();
+            location = '/sorteos/';
+        });
+        
+    });
+
+    function limpiarCampos() {
+    	var inputs = $(".input")
+    	//LIMPIANDO INPUTS
+    	inputs.each(function() {
+    		$(this).val("")
+    	})
+    }
+
+    function verificarCampos() {
+    	var verificacion = true
+    	var inputs = $(".input")
+        console.log('correo ')
+    	//VERIFICANDO CADA CAMPO
+    	inputs.each(function() {
+            if ($(this).val() == "") {
+            verificacion = false}
+        })
+
+    	//DISPARANDO ALERTA SI ES NECESARIA
+    	if (! verificacion) {alert("Por favor ingrese la información requerida.")}
+    	return verificacion
+    }
+
+    function verificarCampos2() {
+        var myVar = document.getElementById("myVar").value;
+        var myVar2 = document.getElementById("myVar2").value;
+        var myVar3 = document.getElementById("myVar3").value;
+        var myVar4 = document.getElementById("myVar4").value;
+    	var verificacion = true
+    	var inputs = $(".input")
+        var correo = $("#correo")
+    	//VERIFICANDO CADA CAMPO
+    	correo.each(function() {
+            if (myVar3+1 >= myVar2){
+                verificacion = false
+                alert("Ya hay suficientes ganadores")
+                return verificacion
+            }
+            if (myVar4.includes($(this).val())) {
+                
+                if (myVar.includes($(this).val())) {
+                    verificacion = false
+                    alert("ya esta en la lista")
+                    return verificacion
+                }
+            }
+            else{
+                verificacion = false
+                alert("Correo no valido")
+                return verificacion
+            }
+        })
+            
+    	//DISPARANDO ALERTA SI ES NECESARIA
+    	
+    	return verificacion
+    }
+</script>
+<div id="myModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close cerrar-modal" data-dismiss="modal">&times;</button>
+            </div>
+            <div id="body-modal" class="modal-body mCustomScrollbar">
+                <h3 class="titulo-red"> Nuevo ganador</h3>
+                <form action="nuevoganador_sorteo/{{data.id_sorteo}}" method="POST" enctype="multipart/form-data" class="col-md-12">
+                    {% csrf_token %}
+                    <div class="row contenedor-notificaciones">
+                        <div class="col-md-12 contenedor-texto">
+                            <div class="input-container">
+                                <label>Correo de Ganador</label>
+                                <input type="text" class="form-control input" maxlength="254" name="correo"  id='correo' required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="boton1">
+                        <button class="btn btn-sucess" onclick='verificarCampos2()'id="nuevo-btn">AGREGAR</button>
+                    </div>
+                </form>
+                <input type="hidden" id="myVar" name="variable" value="{{sortXusser}}">
+                <input type="hidden" id="myVar2" name="variable2" value="{{data.maxGanadores}}">
+                <input type="hidden" id="myVar3" name="variable3" value="{{data.numGanadores}}">
+                <input type="hidden" id="myVar4" name="variable4" value="{{correosUssers}}">
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,216 @@
+{% load static %}
+
+<style>
+    .titulo-red {
+        padding: 0px;
+        padding-bottom: 10px;
+        padding-left: 5%;
+        font-weight: bold;
+        color: #0F195E;
+    }
+
+
+    .contener-notificaciones {
+        margin: auto;
+        padding: 20px 0px;
+        border-radius: 15px;
+    }
+
+    .notificaciones-texto {
+        display: flex;
+        justify-content: flex-start;
+        padding-top: 4rem;
+        align-items: center;
+    }
+
+    .notificaciones-texto h5 {
+        color: #FE3A00;
+        font-size: 15px;
+    }
+
+    .contenedor-imagen,
+    .contenedor-texto {
+        display: block;
+        margin: auto;
+    }
+
+    .imagen {
+        height: 10rem;
+        width: 100%;
+        text-align: center;
+        background-color: #EDEEF0;
+        border-radius: 10px;
+        display: flex;
+        margin: auto;
+        margin-bottom: 10px;
+    }
+
+    .imagen img {
+        width: inherit;
+        margin: auto;
+    }
+
+    .contenedor-searchbar {
+        display: flex;
+        align-items: center;
+        border-radius: 5px;
+        height: 40px;
+        font-size: 1rem;
+    }
+
+    .boton1 .btn,
+    #nuevo-btn {
+        margin: auto;
+        text-align: center;
+        display: block;
+        background: linear-gradient(to right, #2153FF, #0F195E);
+        color: white;
+        font-weight: bolder;
+        font-size: 10px;
+        width: min-content;
+        height: 2.5rem;
+    }
+
+    #nuevo-btn {
+        overflow: hidden;
+        position: relative;
+    }
+    .img-ver{
+        width: 1.3rem;
+    }
+    #fromDate,
+    #toDate {
+        color: #0F195E;
+        background: #D8D9DD;
+    }
+
+    #nuevo-btn input.upload {
+        position: absolute;
+        top: 0;
+        right: 0;
+        margin: 0;
+        padding: 0;
+        font-size: 20px;
+        cursor: pointer;
+        opacity: 0;
+        filter: alpha(opacity=0);
+    }
+
+    #nuevo-btn p {
+        color: white;
+        margin: 5px;
+        font-weight: bolder;
+        font-size: 10px;
+        font-family: inherit;
+    }
+
+    .input-container .input,
+    select {
+        background: #EDEEF0;
+    }
+
+    .notificaciones-link {
+        cursor: pointer;
+    }
+
+    .fila {
+        justify-content: space-between;
+        max-width: 100%;
+        margin: 0;
+    }
+
+    .fila .input-container {
+        width: 45%;
+    }
+</style>
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        $("#guardar-btn").click(function () {
+            if (verificarCampos()) {
+                $("#form").submit()
+                $('.ajax-loader').css("visibility", "visible");
+            }
+        });
+        $('.notificaciones-link').click(function () {
+            limpiarCampos();
+            location = '/sorteos/';
+        });
+        var now = new Date();
+        var month = (now.getMonth() + 1);
+        var day = now.getDate();
+        if (month < 10)
+            month = "0" + month;
+        if (day < 10)
+            day = "0" + day;
+        var today = now.getFullYear() + '-' + month + '-' + day;
+        var from = document.getElementById("fromDate");
+        from.setAttribute("min", today);
+        var to = document.getElementById("toDate");
+        to.setAttribute("min", today);
+        document.getElementById("fromDate").onchange = function () {
+            var input = document.getElementById("toDate");
+            input.setAttribute("min", this.value);
+        }
+        document.getElementById("toDate").onchange = function () {
+            var input = document.getElementById("fromDate");
+            input.setAttribute("max", this.value);
+        }
+
+    });
+
+    var loadImage = function (event) {
+        var output = document.getElementById('img-subir');
+        output.src = "{% static 'img/iconos_administrador/agregar_imagen.png' %}"
+        output.style = "height:auto;width: inherit";
+        output.src = URL.createObjectURL(event.target.files[0]);
+        output.onload = function () {
+            URL.revokeObjectURL(output.src) // free memory
+        }
+    };
+
+    function limpiarCampos() {
+        var inputs = $(".input")
+        //LIMPIANDO INPUTS
+        inputs.each(function () {
+            $(this).val("")
+        })
+    }
+
+    function verificarCampos() {
+        var verificacion = true
+        var inputs = $(".input")
+        //VERIFICANDO CADA CAMPO
+        inputs.each(function () { if ($(this).val() == "") { verificacion = false } })
+        //DISPARANDO ALERTA SI ES NECESARIA
+        if (!verificacion) { alert("Por favor ingrese la información requerida.") }
+        return verificacion
+    }
+
+</script>
+<div id="myModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close cerrar-modal" data-dismiss="modal">&times;</button>
+            </div>
+            <div id="body-modal" class="modal-body mCustomScrollbar">
+                <h3 class="titulo-red">GANADORES</h3>
+                {% csrf_token %}
+                <div class = "row">
+                        {% for usser in data %}
+                        <div class = "col">
+                            <p> {{usser.usuario.correo}}</p>
+                        </div>
+                        <div class = "col">
+                            <a class="btn btn-sm open-modal" href="../clientes/ver_cliente/{{usser.id_cliente}}"><img class="img-ver" src="{% static 'img/iconos_administrador/ver.png' %}"></a>
+                            <br>
+                        </div>
+
+                        {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

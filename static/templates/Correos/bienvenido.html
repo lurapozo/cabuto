@@ -1,0 +1,166 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+<style>
+    .contenido{
+        font-weight: bold;
+        font-family: "Segoe Print";
+        overflow:hidden;
+    }
+    .b-div{
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        margin-top: 5%;
+    }
+    .top{
+        color: white;
+        text-align: center;
+        padding-right: 4%;
+        padding-top: 6%;
+        margin-bottom: auto;
+        line-height: 52px;
+        background-color: #fe3a00;
+        border-radius: 0 29% 60% 52%;
+    }
+    .t-image{
+        display:flex;
+    }
+    .personaje{
+        width: 48%;
+        padding-top: 6%;
+        text-align: right;
+        height: fit-content;
+    }
+    .bottom{
+        color: white;
+        text-align: right;
+        padding: 4% 4% 4% 6%;
+        background-color: #fe3a00;
+        line-height: 70px;
+        height: fit-content;
+        border-top-left-radius: 100%;
+    }
+    .bienvenido{
+        font-size: 4vw;
+        font-weight: lighter;
+    }
+    .nombre{
+        font-size: 2.2rem;
+        margin: 0px;
+    }
+    .agradece{
+        font-size: 1.95rem;
+        margin: 0rem;
+    }
+    .product{
+        text-align: left;
+        position: absolute;
+        top: 24rem;
+        margin-left: 5%;
+        margin-top: 5%;
+    }
+    .pTexto1{
+        font-size: 2.8rem;
+        line-height: 1.2;
+        font-weight: bold;
+        margin: 0;
+        margin-bottom: 15px;
+    }
+    .pTexto2{
+        font-size: 1.5rem;
+        line-height: 1.6;
+        margin: 0;
+    }
+    .t1{
+        font-size: 2.5rem;
+        font-weight: lighter;
+    }
+    .redes{
+        display: inherit;
+        line-height: 0px;
+
+    }
+    .logo{
+        width: 78%;
+        margin: 7%;
+        margin-top: 0px;
+    }
+    .t3{
+        font-size: 1.5rem;
+        margin: 0rem;
+    }
+    .carrito{
+        width: 30%;
+        z-index: 1;
+    }
+    .img-red{
+        height:2rem;
+        width:auto;
+        margin-left:5px;
+    }
+    .img-oferta{
+        height: 15rem;
+        width: auto;
+        margin-left: 30px;
+    }
+    .o-nombre{
+        font-size: 1.5rem;
+        text-transform: uppercase;
+        font-family: system-ui;
+        color: #1567a8;
+        margin-top:2px;
+    }
+</style>
+<body>
+    <div class="col-12 px-3 contenido">
+        <div class="t-image">
+            <div>
+                <div class="top">
+                    <span class="bienvenido">Bienvenido/a</span>
+                    <p class="nombre">{{data.nombre}} {{data.apellido}}</p>
+                    <p class="agradece">Agradecemos tu confianza en:</p>
+                    <img class="logo" src="https://cabutoshop.pythonanywhere.com/media/correo/logo.png" alt="Cabuto's">
+                </div>
+                <div class="product">
+                    <p class="pTexto1">Ya formas parte de nuestra comunidad.</p>
+                    <p class="pTexto2">Te invitamos a gozar de las promociones que todos los meses tenemos para tí.</p>
+                    <img class="img-oferta" src="https://cabutoshop.pythonanywhere.com{{oferta.photo_url}}">
+                    <p class="o-nombre">{{oferta.nombre}}</p>
+                </div>
+            </div>
+
+            <img class="personaje" src="https://cabutoshop.pythonanywhere.com/media/correo/personaje.png" >
+        </div>
+
+
+
+        <div class="b-div">
+            <img class="carrito" src="https://cabutoshop.pythonanywhere.com/media/correo/carrito.png">
+            <div class="bottom">
+                <span class="t1">Síguenos</span>
+                <div class="redes">
+                    {% for data in redes %}
+                        <a href="{{data.enlace}}">
+                            {% if data.nombre == "Instagram" %}
+                                <img class="img-red" src="https://cabutoshop.pythonanywhere.com/media/correo/ig.png">
+                            {% elif data.nombre == "Tik Tok" %}
+                                <img class="img-red" src="https://cabutoshop.pythonanywhere.com/media/correo/tk.png">
+                            {% elif data.nombre == "Facebook" %}
+                                <img class="img-red" src="https://cabutoshop.pythonanywhere.com/media/correo/fb.png">
+                            {% else %}
+                                <img class="img-red" src="https://cabutoshop.pythonanywhere.com/media/correo/tw.png">
+                            {% endif %}
+                        </a>
+                    {% endfor %}
+                </div>
+                <p class="t3">Dudas o comentarios a: info@cabutos.com</p>
+            </div>
+
+        </div>
+
+    </div>
+</body>
+</html>
+

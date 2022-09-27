@@ -1,0 +1,106 @@
+{% load static %}
+<style>
+
+    .upload-container{
+	    height:10rem;
+	    width: 17rem;
+	    text-align:center;
+	    background-color:#EDEEF0;
+	    border-radius: 10px;
+    }
+
+    .cerrar-modal{
+        margin-top: 20px;
+        text-align: end;
+        margin-right: 20px;
+    }
+
+    .input{
+   	    background-color:#D8D9DD;
+        border-radius: 8px;
+    }
+
+    .modal-footer{
+	    text-align:center;
+	    display: block;
+    }
+
+    .btn-warning{
+        background-color: #87868A;
+    }
+
+    .btn-sucess{
+        background: linear-gradient(to right, #2153FF, #0F195E);
+    }
+
+    .btn{
+        color: white;
+        width: 9rem;
+    }
+
+    textarea[name="descripcion"]{
+        height: 10rem;
+    }
+
+    h2{
+        color: #0F195E;
+        font-family: calibri;
+        font-weight: bold;
+    }
+
+    select{
+        width: 10rem;
+    }
+
+    .lbl{
+        text-align: center;
+        width: 100%;
+    }
+
+    .modal-content{
+        width: 40rem;
+        margin: auto;
+    }
+
+    #the-count {
+        float: right;
+        padding: 0.1rem 0 0 0;
+        font-size: 0.875rem;
+    }
+
+</style>
+<div id="myModal2" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 class="modal-title">ESTABLECIMIENTO DE {{datos_mostrar.nombre}}</h2>
+                <button type="button" class="close cerrar-modal" type="button" data-dismiss="modal" aria-label="close" data-mdb-dismiss="modal" >
+                    &times;
+                </button>
+        </div>
+            {% csrf_token %}
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="input-container1">
+					        <label>Establecimiento: </label>
+                            <br>    
+                            {% for establecimiento in estab %}
+                                {% if establecimiento in arrPxZ%}
+                                {% for estabXprod in prodXestab %}
+                                {% if estabXprod.id_establecimiento.id_establecimiento == establecimiento.id_establecimiento %}
+                                    <label for={{establecimiento.id_establecimiento}}>> {{establecimiento.nombre}}</label><br>
+                                {% endif %}
+                                {% endfor %}
+                                {% endif %}
+                            {% endfor %}
+				        </div>
+                    </div>
+                </div>
+            </div>
+    </div>
+</div>
+</div>
+<script>
+
+</script>

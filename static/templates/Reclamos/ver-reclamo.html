@@ -1,0 +1,176 @@
+{% load static %}{% include 'Shared/header.html' %}{% include 'Shared/navbar.html' %}{% include 'Shared/sidebar.html' %}
+
+<style>
+    .titulo-red {
+        padding:0px;
+        padding-bottom: 10px;
+        padding-left: 5%;
+        font-weight: bold;
+        color: #0F195E;
+    }
+
+
+    .contener-notificaciones{
+        margin:auto;
+        padding: 20px 0px;
+        border-radius:15px;
+        margin-right: 120px;
+        margin-bottom: 170px;
+        margin-left: 0;
+    }
+    .notificaciones-texto{
+        display: flex;
+        justify-content: flex-start;
+        padding-top: 4rem;
+        align-items: center;
+
+    }
+    .notificaciones-texto h5{
+        color: #FE3A00;
+        font-size: 15px;
+    }
+    .contenedor-imagen, .contenedor-texto{
+	    display:block;
+	    margin:auto;
+    }
+    .imagen{
+        height:8rem;
+        width:170%;
+	    text-align:center;
+	    border-radius: 10px;
+	    display:flex;
+	    margin:auto;
+	    margin-bottom: 10px;
+    }
+    .imagen img{
+        max-width:100%;
+        margin: auto;
+        max-height: 400px;
+    }
+
+    .boton1 .btn,
+    #nuevo-btn{
+        margin: auto;
+        text-align: center;
+        display:block;
+        background: linear-gradient(to right, #2153FF, #0F195E);
+        color: white;
+        font-weight: bolder;
+        font-size: 10px;
+        width: min-content;
+        height: 2.5rem;
+    }
+    #nuevo-btn{
+        overflow:hidden;
+        position: relative;
+    }
+    #fromDate, #toDate{
+        color: #0F195E;
+        background: #D8D9DD;
+    }
+    #nuevo-btn input.upload {
+        position: absolute;
+        top: 0;
+        right: 0;
+        margin: 0;
+        padding: 0;
+        font-size: 20px;
+        cursor: pointer;
+        opacity: 0;
+        filter: alpha(opacity=0);
+    }
+    #nuevo-btn p{
+        color: white;
+        margin: 5px;
+        font-weight: bolder;
+        font-size: 10px;
+        font-family: inherit;
+    }
+    .input-container .input, select {
+        display: inline-block;
+        background: #EDEEF0;
+        max-width: 150px;
+        word-wrap: break-word;
+    }
+    .notificaciones-link{
+        cursor: pointer;
+    }
+    .fila{
+        justify-content: space-between;
+        max-width: 100%;
+        margin: 0;
+    }
+    .fila .input-container {
+        width: 45%;
+    }
+    .box{
+        inline-size: 22vw;
+        overflow-wrap: break-word;
+        word-wrap: break-all;
+    }
+    .modal-footer{
+	    text-align:center;
+	    display: block;
+    }
+
+    .btn-warning{
+        background-color: #87868A;
+    }
+
+    .btn-sucess{
+        background: linear-gradient(to right, #2153FF, #0F195E);
+    }
+
+    .btn{
+        color: white;
+        width: 9rem;
+    }
+
+    textarea[name="descripcion1"]{
+        height: 10rem;
+    }
+
+    h2{
+        color: #0F195E;
+        font-family: calibri;
+        font-weight: bold;
+    }
+
+    select{
+        width: 10rem;
+    }
+
+    .lbl{
+        text-align: center;
+        width: 100%;
+    }
+
+</style>
+<div id="popup" class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 class="modal-title">VER RECLAMO</h2>
+        </div>
+                    <div class="row contener-notificaciones">
+            <div class="col-md-8 contenedor-texto">
+                <h4><b>Descripción</b></h4>
+                <div class="input-container">
+
+                    <div class="box">
+                        {{data.descripcion}}
+                    </div>
+
+		        </div>
+            </div>
+            <div class="col-md-4 contenedor-imagen">
+                <div class="imagen">
+                    <img id="img-subir"class="img-subir center-block" src="https://cabutoshop.pythonanywhere.com/media/{{data.image}}">
+                </div>
+        </div>
+                    </div>
+                        <div class="modal-footer">
+                <button class="btn btn-warning" onclick="location.href='../../reclamos/'" id="limpiarCampos-btn" type="button" data-dismiss="modal">Regresar</button>
+            </div>
+    </div>
+</div>
+</div>

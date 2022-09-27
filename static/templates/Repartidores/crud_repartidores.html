@@ -1,0 +1,209 @@
+{% load static %}
+{% load tz %}
+{% include 'Shared/header.html' %}
+{% include 'Shared/sidebar.html' %}
+{% include 'Shared/navbar.html' %}
+
+<style>
+    h3 {
+        padding-top: 4rem;
+        padding-left: 5%;
+        font-weight: bold;
+        color: #0F195E;
+        margin: auto;
+    }
+    .contenedor-notificaciones{
+        margin:auto;
+        padding: 20px 10px;
+        border-radius:15px;
+        min-width: min-content;
+        max-width: 70%;
+    }
+    .notificaciones{
+        text-align: center;
+    }
+    thead th{
+        background-color: #FE3A00;
+        color:white;
+        padding: 7px !important;
+        vertical-align: middle !important;
+        line-height: 1rem;
+        border:0px;
+    }
+    tr th:first-child {
+      border-top-left-radius: 7px;
+      border-bottom-left-radius: 7px;
+    }
+    tr th:last-child {
+      border-top-right-radius: 7px;
+      border-bottom-right-radius: 7px;
+    }
+    tbody td{
+        border-top: 2px solid rgba(15,25,94,0.3) !important;
+        border-bottom: 1px solid rgba(15,25,94,0.3);
+        padding: 1.1rem !important;
+        vertical-align: middle !important;
+        color:#444242;
+    }
+    tr:first-child td {
+        border-top: none !important;
+    }
+    table th{
+        border: none !important;
+    }
+    .contenedor-filtro{
+        width: 100%;
+        display: flex;
+        justify-content: flex-end;
+    }
+    .contenedor-searchbar{
+        display: flex;
+        align-items: center;
+        border-radius: 5px;
+        height: 40px;
+        font-size: 1rem;
+    }
+    .total-clientes{
+        width: 100%;
+        border-top: 3px solid #0F195E;
+        padding-top: 10px;
+        margin-top: 2rem;
+        color: #444242;
+    }
+    .total-clientes span:first-child{
+        font-weight: bold;
+        padding-right: 25px;
+        padding-left: 35%;
+        color: #0F195E;
+    }
+    #buscar{
+        background: url("{% static 'img/iconos_administrador/buscar.png' %}") no-repeat scroll #D8D9DD;
+        padding-right: 30px;
+        margin:20px;
+    }
+    .pagination{
+        justify-content: center;
+        margin-top:10px;
+    }
+    .pagination .active{
+        width: 1.6rem;
+        background: #0f195e;
+        color: white;
+        text-align: center;
+        border-radius: 0.5rem;
+        margin: 0px 20px;
+        height: 1.5rem;
+        font-weight: bolder;
+        font-size: 14px;
+        padding-top: 2px;
+    }
+    .boton .btn{
+        margin: auto;
+        text-align: center;
+        background: linear-gradient(to right, #2153FF, #0F195E);
+        color: white;
+        font-weight: bolder;
+        font-size: 10px;
+        width: 9rem;
+        height: 2.5rem;
+    }
+    .boton a{
+        display:flex;
+        justify-content: center;
+        align-items:center;
+    }
+
+    .pagination li:first-child a,
+    .pagination li:last-child a,
+    .pagination li:first-child span,
+    .pagination li:last-child span{
+        color: #0f195e;
+        font-size: 13px;
+    }
+    .img-borrar,.img-editar{
+      height: 1rem;
+    }
+    .img-ver{
+        width: 1.3rem;
+    }
+
+</style>
+<script type="text/javascript">
+    $(document).ready(function() {
+        var input = document.getElementById("buscar");
+        input.value="";
+        input.addEventListener("keyup", function(event) {
+          if (event.keyCode === 13) {
+           location = '?busqueda='+input.value;
+          }
+        });
+        var modalDiv = $("#modal-div");
+        $(".open-modal").on("click", function() {
+          $.ajax({
+            beforeSend: function(){
+                $('.ajax-loader').css("visibility", "visible");
+            },
+            url: $(this).attr("data-url"),
+            success: function(data) {
+                modalDiv.html(data);
+                $("#myModal").modal();
+            },
+            complete: function(){
+                $('.ajax-loader').css("visibility", "hidden");
+            }
+          });
+        });
+    });
+</script>
+<div class="col-12">
+  <div class="col-md-12">
+    <h3 class="row">REPARTIDORES</h3>
+    <div class="row contenedor-filtro">
+        <div class="contenedor-searchbar">
+            <!-- <input type='text' class="form-control" id='buscar' placeholder="Buscar"> -->
+            <div class = "boton"><a class="btn btn-sucess" href="add_repartidor">NUEVO REPARTIDOR </a></div>
+        </div>
+    </div>
+    <div class="contenedor-notificaciones">
+        {% if data %}
+        <table class="table notificaciones">
+            <thead>
+                <tr>
+                <th>Nombre</th>
+                <th>Apellido</th>
+                <th>Telefono</th>
+                <th>Chat</th>
+                <th>Estado</th>
+                <th>Editar</th>
+                <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for repartidor in data %}
+                    <tr>
+                    <td>{{repartidor.nombre}}</td>
+                    <td>{{repartidor.apellido}}</td>
+                    <td>{{repartidor.telefono}}</td>
+                    <td>{{repartidor.token}}</td>
+                    <td>{{repartidor.estado}}</td>
+                    <td>
+                       <a class="btn btn-sucess" href="edit_repartidor/{{repartidor.id_repartidor}}"><img class="img-editar" src="{% static 'img/iconos_administrador/editar.png' %}"></a>
+                    </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <div class="total-clientes">
+            <span>Total Usuarios: </span><span>{{total}}</span>
+        </div>
+        {% else %}
+        <h3 style="display: table;">No existen datos para presentar</h3>
+        {% endif %}
+        
+        
+    </div>
+    
+  </div>
+</div>
+
+<div id="modal-div"></div>

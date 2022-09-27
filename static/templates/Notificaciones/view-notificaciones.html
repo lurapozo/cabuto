@@ -1,0 +1,179 @@
+{% load static %}
+
+<style>
+    .titulo-notificacion{
+        padding:0px;
+        padding-bottom: 10px;
+        padding-left: 5%;
+        font-weight: bold;
+        color: #0F195E;
+    }
+    .notificaciones-texto{
+        display: flex;
+        justify-content: flex-start;
+        padding-top: 4rem;
+        align-items: center;
+    }
+    .notificaciones-texto h5{
+        color: #FE3A00;
+        font-size: 15px;
+    }
+    .contenedor-imagen, .contenedor-texto{
+	    display:block;
+    }
+    .imagen{
+        height:15rem;
+        width: 13rem;
+	    text-align:center;
+	    background-color:#EDEEF0;
+	    border-radius: 10px;
+	    display:flex;
+	    margin-bottom: 10px;
+    }
+    .imagen img{
+        width: inherit;
+        margin: auto;
+    }
+    .contenedor-searchbar{
+        display: flex;
+        align-items: center;
+        border-radius: 5px;
+        height: 40px;
+        font-size: 1rem;
+    }
+    .boton1 .btn,
+    #nuevo-btn{
+        margin: auto;
+        text-align: center;
+        display:block;
+        background: linear-gradient(to right, #2153FF, #0F195E);
+        color: white;
+        font-weight: bolder;
+        font-size: 10px;
+        width: 9rem;
+        height: 2.5rem;
+    }
+    #nuevo-btn{
+        overflow:hidden;
+        position: relative;
+    }
+    #nuevo-btn input.upload {
+        position: absolute;
+        top: 0;
+        right: 0;
+        margin: 0;
+        padding: 0;
+        font-size: 20px;
+        cursor: pointer;
+        opacity: 0;
+        filter: alpha(opacity=0);
+    }
+    #nuevo-btn p{
+        color: white;
+        margin: 5px;
+        font-weight: bolder;
+        font-size: 10px;
+        font-family: inherit;
+    }
+    .input-container .input, select {
+        background: #EDEEF0;
+    }
+    .notificaciones-link{
+        cursor: pointer;
+    }
+
+</style>
+<script type="text/javascript">
+
+    $(document).ready(function() {
+
+        var modalDiv = $("#modal-div");
+        $("#resend-btn").click(function() {
+    	    $.ajax({
+            beforeSend: function(){
+                $('.ajax-loader').css("visibility", "visible");
+            },
+            url: $(this).attr("ruta"),
+            success: function(data) {
+                console.log(data)
+            },
+            complete: function(){
+                $('.ajax-loader').css("visibility", "hidden");
+            }
+          });
+        });
+
+    });
+
+    var loadImage = function(event) {
+        var output = document.getElementById('img-subir');
+        output.src="{% static 'img/iconos_administrador/agregar_imagen.png' %}"
+        output.style="height:100%;";
+        output.src = URL.createObjectURL(event.target.files[0]);
+        output.onload = function() {
+            URL.revokeObjectURL(output.src) // free memory
+        }
+    };
+
+    function limpiarCampos() {
+    	var inputs = $(".input")
+    	//LIMPIANDO INPUTS
+    	inputs.each(function() {
+    		$(this).val("")
+    	})
+    }
+
+    function verificarCampos() {
+    	var verificacion = true
+    	var inputs = $(".input")
+    	//VERIFICANDO CADA CAMPO
+    	inputs.each(function() {if ($(this).val() == "") {verificacion = false}})
+    	//DISPARANDO ALERTA SI ES NECESARIA
+    	if (! verificacion) {alert("Por favor ingrese la información requerida.")}
+    	return verificacion
+    }
+
+</script>
+<div id="myModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <!-- Modal content-->
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close cerrar-modal" data-dismiss="modal">&times;</button>
+        </div>
+        <div id="body-modal" class="modal-body mCustomScrollbar">
+    <h3 class="titulo-notificacion">INFORMACIÓN NOTIFICACIÓN</h3>
+
+        <div class="row">
+            <div class="col-md-6 contenedor-texto">
+                <div class="input-container">
+			        <label>Tipo</label>
+                    <input type="text" class="form-control input" name="tipo" value="{{data.tipo}}" disabled required>
+		        </div>
+                <br>
+                <div class="input-container">
+                    <label>Asunto:</label>
+			        <input type="text" class="form-control input" name="asunto" value="{{data.asunto}}" disabled required>
+		        </div>
+                <br>
+                <div class="input-container">
+			        <label>Mensaje:</label>
+			        <textarea class="form-control input" name="mensaje" value="{{data.mensaje}}" disabled required>{{data.mensaje}}</textarea>
+		        </div>
+		        <br>
+            </div>
+            <div class="col-md-6 contenedor-imagen">
+                <div class="imagen">
+                    <img id="img-subir"class="img-subir center-block" src="https://cabutoshop.pythonanywhere.com/media/{{data.image}}">
+                </div>
+            </div>
+        </div>
+
+        <div class = "boton1"><button class="btn btn-sucess" ruta="enviar_notificacion/{{data.id_notificacion}}" id="resend-btn" >REENVIAR NOTIFICACIÓN</button></div>
+
+  </div>
+    </div>
+  </div>
+</div>
+
+<div id="modal-div"></div>

@@ -1,0 +1,387 @@
+{% load static %}
+<style>
+    /*
+    DEMO STYLE
+*/
+
+    @import "https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700";
+    body {
+        font-family: 'Poppins', sans-serif;
+        background: #0F195E;
+    }
+
+    a,
+    a:hover,
+    a:focus {
+        color: inherit;
+        text-decoration: none;
+        transition: all 0.3s;
+    }
+
+    .navbar {
+        padding: 15px 10px;
+        background: #fff;
+        border: none;
+        border-radius: 0;
+        margin-bottom: 40px;
+        box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
+    }
+
+    .navbar-btn {
+        box-shadow: none;
+        outline: none !important;
+        border: none;
+    }
+
+    .line {
+        width: 100%;
+        height: 1px;
+        border-bottom: 1px dashed #ddd;
+        margin: 40px 0;
+    }
+    /* ---------------------------------------------------
+    SIDEBAR STYLE
+----------------------------------------------------- */
+
+    #sidebar {
+        width: 21rem;
+        position: fixed;
+        top: 0;
+        left: -21rem;
+        height: 100vh;
+        z-index: 999;
+        background: #EDEEF0;
+        color: #fff;
+        transition: all 0.3s;
+        overflow-y: scroll;
+    }
+
+    #sidebar.active {
+        left: 0;
+    }
+
+    #dismiss {
+        width: 35px;
+        height: 35px;
+        line-height: 35px;
+        text-align: center;
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        cursor: pointer;
+        -webkit-transition: all 0.3s;
+        -o-transition: all 0.3s;
+        transition: all 0.3s;
+    }
+
+    .overlay {
+        display: none;
+        position: fixed;
+        width: 100vw;
+        height: 100vh;
+        z-index: 998;
+        opacity: 0;
+        transition: all 0.5s ease-in-out;
+    }
+
+
+    #sidebar .sidebar-header {
+        padding: 10px;
+        background: linear-gradient(to right, rgba(41, 91, 255, 1) 0%, rgba(41, 91, 255, 1) 6%, rgba(16, 26, 96, 1) 80%, rgba(16, 26, 96, 1) 100%);
+    }
+
+    #sidebar ul p {
+        color: #0F195E;
+        padding: 10px;
+    }
+
+    #sidebar ul li a {
+        padding: 10px;
+        font-size: 1.1em;
+        display: block;
+        color: #0F195E;
+        font-weight: bold;
+    }
+
+    #sidebar ul li a:hover {
+        color: #FE3A00;
+        text-decoration: none;
+    }
+
+    a[data-toggle="collapse"] {
+        position: relative;
+    }
+
+    .dropdown-toggle::after {
+        display: block;
+        position: absolute;
+        top: 50%;
+        right: 20px;
+        transform: translateY(-50%);
+    }
+
+    ul ul a {
+        font-size: 1.2rem !important;
+        padding-left: 30px !important;
+        background: #F7F7F8;
+    }
+
+    ul.CTAs {
+        padding: 20px;
+    }
+
+    ul.CTAs a {
+        text-align: center;
+        font-size: 0.9em !important;
+        display: block;
+        border-radius: 5px;
+        margin-bottom: 5px;
+    }
+
+    a.download {
+        background: #fff;
+        color: #7386D5;
+    }
+
+    a.article,
+    a.article:hover {
+        background: #6d7fcc !important;
+        color: #fff !important;
+    }
+
+    img#logo-principal {
+        width: 5rem;
+    }
+
+    .contenedor-imagen {
+        margin-top: 2rem;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .contenedor-correo {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    .ajax-loader {
+        visibility: hidden;
+        background-color: rgba(255,255,255,0.7);
+        position: fixed;
+        z-index: +2100 !important;
+        width: 100%;
+        height:100%;
+    }
+
+    .ajax-loader img {
+        position: relative;
+        top: 35%;
+        left: 41%;
+        height: 30%;
+    }
+    /* ---------------------------------------------------
+    CONTENT STYLE
+----------------------------------------------------- */
+
+    #content {
+        width: 100%;
+        padding: 20px;
+        min-height: 100vh;
+        transition: all 0.3s;
+        position: absolute;
+        top: 0;
+        right: 0;
+    }
+    td.max-width-50 {
+      max-width: 15rem;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+</style>
+<!DOCTYPE html>
+<html>
+
+<head>
+
+
+    <!-- Bootstrap CSS CDN -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <!-- Scrollbar Custom CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/malihu-custom-scrollbar-plugin@3.1.5/jquery.mCustomScrollbar.css" />
+
+    <!-- Font Awesome JS -->
+    <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/solid.js" integrity="sha384-tzzSw1/Vo+0N5UhStP3bvwWPq+uvzCMfrN1fEFe+xBmv1C/AtVX5K0uZtmcHitFZ" crossorigin="anonymous"></script>
+    <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/fontawesome.js" integrity="sha384-6OIrr52G08NpOFSZdxxz1xdNSndlD4vdcf/q2myIUVO0VsqaGHJsB0RaBE01VTOY" crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <div class="ajax-loader">
+      <img src="https://4666-28620.el-alt.com/assets/loading.gif" class="img-responsive" />
+    </div>
+    <div class="wrapper">
+        <!-- Sidebar  -->
+        <nav id="sidebar">
+            <div id="dismiss">
+                <i class="fas fa-arrow-left"></i>
+            </div>
+
+            <div class="sidebar-header form-row">
+                <div class="col-12 form-group contenedor-imagen">
+                    <img id="logo-principal" src="{% static 'img/iconos_administrador/avatar.png' %}">
+                </div>
+                {% if user.is_authenticated %}
+                <div class="col-12 form-group contenedor-correo">
+                    <label>{{ user}}</label>
+                </div>
+                {% endif %}
+
+
+            </div>
+
+            <ul class="list-unstyled components">
+                <li class="active">
+                    <a href="#homeSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">ADMINISTRACIÓN DEL SISTEMA</a>
+                    <ul class="collapse list-unstyled" id="homeSubmenu">
+                        <li>
+                            <a href="/clientes/">Clientes registrados</a>
+                        </li>
+                        <li>
+                            <a href="/usuarios/">Usuarios del Sistema</a>
+                        </li>
+                        <li>
+                            <a href="/establecimientos/">Establecimientos</a>
+                        </li>
+                        <!--<li>
+                            <a href="/crud_repartidores">Repartidores Registrados</a>
+                        </li>-->
+                    </ul>
+                </li>
+                <!--<li>
+                    <a href="#pageSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">STOCK</a>
+                    <ul class="collapse list-unstyled" id="pageSubmenu">
+                        <li>
+                            <a href="#">Compras</a>
+                        </li>
+                        <li>
+                            <a href="#">Caducidad de Productos</a>
+                        </li>
+
+                    </ul>
+                </li>-->
+                <li>
+                    <a href="/productos/">PRODUCTOS</a>
+                </li>
+                <li>
+                    <a href="/pedidos/">PEDIDOS</a>
+                </li>
+                <!--<li>
+                    <a href="#comSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">COMBOS</a>
+                    <ul class="collapse list-unstyled" id="comSubmenu"></ul>
+                </li>-->
+                <li class="active">
+                    <a href="#promocionSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">PROMOCIONES</a>
+                    <ul class="collapse list-unstyled" id="promocionSubmenu">
+                        <!--<li>
+                            <a href="/codigos/">Códigos</a>
+                        </li>
+                        <li>
+                            <a href="/cupones/">Cupones</a>
+                        </li>-->
+                        <li>
+                            <a href="/ofertas/">Ofertas</a>
+                        </li>
+                        <li>
+                            <a href="/sorteos/">Sorteos</a>
+                        </li>
+                    </ul>
+                </li>
+                <!--<li>
+                    <a href="/pedidosEspera/">PEDIDOS EN ESPERA</a>
+                </li>-->
+                <li>
+                    <a href="/devoluciones/">DEVOLUCIONES</a>
+                </li>
+                <li>
+                    <a href="/coberturaEnvio/">COBERTURA</a>
+                </li>
+                <li>
+                    <a href="/notificaciones/" >NOTIFICACIONES</a>
+                </li>
+                <li>
+                    <a href="/redesSociales/">REDES SOCIALES</a>
+                </li>
+                <li>
+                    <a href="/estadisticas/">ESTADÍSTICAS</a>
+                </li>
+                <li>
+                    <a href="#pageReportes" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">REPORTES</a>
+                    <ul class="collapse list-unstyled" id="pageReportes">
+                        <li>
+                            <a href="/pagos/">Pagos realizados</a>
+                        </li>
+                        <li>
+                            <a href="/ventas/">Ventas</a>
+                        </li>
+                        <li>
+                            <a href="/entregas/">Entregas</a>
+                        </li>
+                    </ul>
+                </li>
+                <!--<li>
+                    <a href="#">ESTADÍSTICAS</a>
+                </li>-->
+                <li>
+                    <a href="/reclamos/" >RECLAMOS Y SUGERENCIAS</a>
+                </li>
+                <li>
+                    <a href="/politica/" >POLÍTICAS DE USO</a>
+                </li>
+            </ul>
+
+
+        </nav>
+
+
+    </div>
+    <div class="overlay"></div>
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+    <!-- Popper.JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js" integrity="sha384-cs/chFZiN24E4KMATLdqdvsezGxaGsi4hLGOzlXwp5UZB1LY//20VyM2taTB4QvJ" crossorigin="anonymous"></script>
+    <!-- jQuery Custom Scroller CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/malihu-custom-scrollbar-plugin@3.1.5/jquery.mCustomScrollbar.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            //$('#sidebar').addClass('active');
+            $('.overlay').addClass('active');
+
+            $("#sidebar").mCustomScrollbar({
+                theme: "minimal"
+            });
+
+
+
+            $('#dismiss, .overlay').on('click', function() {
+                $('#sidebar').removeClass('active');
+                $('.overlay').removeClass('active');
+                document.getElementById('nav-custom').style.marginLeft = "0rem";
+            });
+
+            $('#sidebarCollapse').on('click', function() {
+                document.getElementById('nav-custom').style.marginLeft = "0rem";
+                $('#sidebar').addClass('active');
+                $('.overlay').addClass('active');
+                $('.collapse.in').toggleClass('in');
+                $('a[aria-expanded=true]').attr('aria-expanded', 'false');
+            });
+        });
+    </script>
+</body>
+
+</html>

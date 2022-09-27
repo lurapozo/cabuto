@@ -1,0 +1,68 @@
+{% load static %}
+<style>
+    .modal-dialog{
+        max-width: 35rem;
+    }
+    .modal-content{
+        border-radius: .7rem;
+    }
+    .modal-body{
+        padding: 2rem;
+        overflow-y: auto;
+    }
+    .modal-header{
+        align-items: center;
+        border-width: 0px;
+        padding: 2rem;
+        padding-bottom: 0rem;
+    }
+    .modal-header .nombre-cliente{
+        margin: 0;
+    }
+    .modal-body img{
+        width: 5rem;
+    }
+    .contener-datos{
+        display: block;
+        text-align: center;
+        margin: 5rem;
+    }
+    .texto{
+        font-weight: bolder;
+        margin: 1rem 0rem;
+        padding-bottom: 2rem;
+        color: #0F195E;
+    }
+
+    .btn-cancelar{
+        background-color: #87868A;
+    }
+    .btn{
+        color: white;
+        width: 8rem;
+        text-transform: uppercase;
+        font-size: .7rem;
+        font-weight: bolder;
+        padding: 10px;
+    }
+
+
+</style>
+
+<div id="myModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <!-- Modal content-->
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close cerrar-modal" data-dismiss="modal">&times;</button>
+        </div>
+        <div id="body-modal" class="modal-body">
+            <div class="contener-datos">
+                <img src="{% static 'img/iconos_perfil/error.png' %}">
+                <h5 class="texto">{{data}}</h5>
+            </div>
+
+        </div>
+    </div>
+  </div>
+</div>

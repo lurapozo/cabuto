@@ -1,0 +1,97 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+<style>
+    .contenido{
+        text-align:center;
+        background-color: #fdfdfd;
+    }
+    .titulo{
+        font-size: 4.5rem;
+        margin:0px;
+        margin-top: 2%;
+        font-weight: bold;
+        font-family: "Segoe Print";
+    }
+    img {
+        width: 100%;
+    }
+    .texto{
+        margin: 1rem 16%;
+    }
+    .campos .left {
+        text-align: right;
+        font-size: 1rem;
+        width: 50%;
+        padding-right: 10px;
+        font-weight: bold;
+    }
+    .campos .right {
+        text-align: left;
+        width: 50%;
+        font-size: 1rem;
+        font-weight: bold;
+        margin-bottom: 0px;
+    }
+    .campos > label{
+        display: table-cell;
+    }
+    .campos{
+        display: table;
+        margin: 1rem auto;
+        width: 100%;
+    }
+    .detalle {
+        border: 1px solid black;
+        margin: 2rem 5rem;
+        display: block;
+    }
+    .correo{
+        color: #ff3700;
+        position: absolute;
+        margin-top: 35px;
+        font-size: 24px;
+        margin-left: calc(100% - 70%);
+    }
+</style>
+<body>
+    <div class="col-12 px-3 contenido">
+        <img id="img-top"class="img-subir center-block" src="https://cabutoshop.pythonanywhere.com/media/correo/correo_top.png">
+        <br>
+        <p class="titulo"><strong>¡Gracias!</strong></p>
+        <h1><strong>{{data.pedido.cliente.nombre}} {{data.pedido.cliente.apellido}}</strong></h1>
+        <h2 class="texto">Tu compra en CABUTO'S por el valor de ${{data.pedido.total |floatformat:2}} ha sido realizada con éxito</h2>
+        <div class="detalle">
+            <div class="campos" >
+              <label class="left">Fecha: </label>
+              <label class="right">{{data.pedido.fecha | date:"d-m-Y H:i"}}</label>
+            </div>
+            <div class="campos" >
+              <label class="left">Valor: </label>
+              <label class="right">${{data.pedido.total|floatformat:2}}</label>
+            </div>
+            <div class="campos" >
+              <label class="left">Descripción: </label>
+              <label class="right">CABUTO'S</label>
+            </div>
+            <div class="campos" >
+              <label class="left">Cuotas: </label>
+              <label class="right">1</label>
+            </div>
+            <div class="campos">
+              <label class="left">Autorización: </label>
+              <label class="right">{{autorizacion}}</label>
+            </div>
+            <div class="campos">
+              <label class="left">ID Transacción: </label>
+              <label class="right">{{data.transaccion}}</label>
+            </div>
+        </div>
+        <br>
+        <span class="correo">Dudas o comentarios a: CabutosEcuador@gmail.com.com</span>
+        <img id="img-bottom"class="img-subir center-block" src="https://cabutoshop.pythonanywhere.com/media/correo/correo_bottom.png">
+    </div>
+</body>
+</html>
+

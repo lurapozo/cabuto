@@ -1,0 +1,54 @@
+{% load static %}
+{% include 'Shared/header.html' %}
+{% include 'Shared/sidebar.html' %}
+{% include 'Shared/navbar.html' %}
+
+<style>
+    h2{
+        color: #0F195E;
+        padding: 5% 0% 0% 15%;
+        font-weigth: bold !important;
+    }
+
+    .input-container{
+        padding: 2% 15% 2% 15%;
+    }
+
+    .btn{
+        margin: auto;
+        text-align: center;
+        display:block;
+        background: linear-gradient(to right, #2153FF, #0F195E);
+        color: white;
+    }
+
+    textarea[name="descripcion"]{
+        height: 20rem;
+    }
+    .boton1{
+        padding-left:558px;
+    }
+
+</style>
+<body>
+<h2>POLÍTICAS DE USO</h2>
+<form action="" method="POST" enctype="multipart/form-data" class="col-md-12">
+    {% csrf_token %}
+        <div class="col-md-12">
+            <div class="input-container ">
+                    <!--<div class="input-container">
+					    <label>Nombre</label>
+					    <input type="text" class="form-control input" name="nombre" required>
+				    </div>-->
+                    <div class="input-container">
+					    <!--<label>Descripción</label>-->
+					    <textarea id = "pol" class="form-control input" name="descripcion"  required>{{detalle}}</textarea>
+                    </div>
+            </div>
+        </div>
+        <div class = "boton1"><button class="btn btn-sucess" id="guardar-btn" type="submit">Editar</button></div>
+
+</form>
+<script type="text/javascript" src="{% static 'js/formulario.js' %}"></script>
+
+</body>

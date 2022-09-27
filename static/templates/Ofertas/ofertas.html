@@ -1,0 +1,299 @@
+{% load static %}
+{% include 'Shared/header.html' %}
+{% include 'Shared/sidebar.html' %}
+{% include 'Shared/navbar.html' %}
+
+<style>
+    h3 {
+        padding-top: 4rem;
+        padding-left: 5%;
+        font-weight: bold;
+        color: #0F195E;
+        margin: auto;
+    }
+    .contenedor-notificaciones{
+        margin:auto;
+        padding: 20px 10px;
+        border-radius:15px;
+        min-width: min-content;
+        max-width: 70%;
+    }
+    .notificaciones{
+        text-align: center;
+    }
+    thead th{
+        background-color: #FE3A00;
+        color:white;
+        padding: 6px !important;
+        vertical-align: middle !important;
+        line-height: 1rem;
+        border:0px:
+    }
+    tr th:first-child {
+      border-top-left-radius: 7px;
+      border-bottom-left-radius: 7px;
+    }
+    tr th:last-child {
+      border-top-right-radius: 7px;
+      border-bottom-right-radius: 7px;
+    }
+    tbody td{
+        border-top: 2px solid rgba(15,25,94,0.3) !important;
+        border-bottom: 1px solid rgba(15,25,94,0.3);
+        padding: 1rem !important;
+        vertical-align: middle !important;
+        color:#444242;
+    }
+    tr:first-child td {
+        border-top: none !important;
+    }
+    table th{
+        border: none !important;
+    }
+    .contenedor-filtro{
+        width: 100%;
+        display: flex;
+        justify-content: flex-end;
+    }
+    .contenedor-searchbar{
+        display: flex;
+        align-items: center;
+        border-radius: 5px;
+        height: 40px;
+        font-size: 1rem;
+    }
+
+    #buscar{
+        background: url("{% static 'img/iconos_administrador/buscar.png' %}") no-repeat scroll #D8D9DD;
+        padding-right: 30px;
+        margin:20px;
+    }
+    .pagination{
+        justify-content: center;
+        margin-top:10px;
+    }
+    .pagination .active{
+        width: 1.6rem;
+        background: #0f195e;
+        color: white;
+        text-align: center;
+        border-radius: 0.5rem;
+        margin: 0px 20px;
+        height: 1.5rem;
+        font-weight: bolder;
+        font-size: 14px;
+        padding-top: 2px;
+    }
+    .boton1 .btn{
+        margin: auto;
+        text-align: center;
+        background: linear-gradient(to right, #2153FF, #0F195E);
+        color: white;
+        font-weight: bolder;
+        font-size: 10px;
+        width: 9rem;
+        height: 2.5rem;
+    }
+    .boton1 a{
+        display:flex;
+        justify-content: center;
+        align-items:center;
+    }
+
+    .pagination li:first-child a,
+    .pagination li:last-child a,
+    .pagination li:first-child span,
+    .pagination li:last-child span{
+        color: #0f195e;
+        font-size: 13px;
+    }
+    .img-borrar,.img-editar{
+      height: 1rem;
+    }
+    .img-producto{
+      width: 3.5rem;
+    }.total-clientes{
+        width: 90%;
+        border-top: 3px solid #0F195E;
+        padding-top: 10px;
+        margin-top: 2rem;
+        color: #444242;
+    }
+    .total-clientes span:first-child{
+        font-weight: bold;
+        padding-right: 25px;
+        padding-left: 35%;
+        color: #0F195E;
+    }
+    .switch > input{
+        opacity: 0;
+    }
+    .switch > div {
+      width: 60px;
+      height: 30px;
+      background: #9A9A9A;
+      z-index: 0;
+      cursor: pointer;
+      position: relative;
+      border-radius: 50px;
+      line-height: 40px;
+      text-align: right;
+      padding: 0 10px;
+      color: rgba(0,0,0,.5);
+      transition: all 250ms;
+    }
+
+    .switch > input:checked + div {
+      background: lime;
+      text-align: left;
+    }
+
+    .switch > div:before {
+        content: '';
+        display: inline-block;
+        position: absolute;
+        left: 4px;
+        top: 3px;
+        height: 24px;
+        width: 24px;
+        background: white;
+        border-radius: 50%;
+        transition: all 200ms;
+    }
+
+    .switch > input:checked + div:before {
+      content: '';
+      position: absolute;
+      left: 32px;
+      border-radius: 50%;
+    }
+</style>
+<script type="text/javascript">
+    $(document).ready(function() {
+        var input = document.getElementById("buscar");
+        input.value="";
+        input.addEventListener("keyup", function(event) {
+          if (event.keyCode === 13) {
+           location = '?busqueda='+input.value;
+          }
+        });
+    });
+    function cambiarEstado(id){
+        $.ajax({
+            beforeSend: function(){
+                $('.ajax-loader').css("visibility", "visible");
+            },
+            url: "eliminar_ofertas/"+id,
+            success: function(data) {
+                var modalDiv = $("#modal-div");
+                modalDiv.html(data.html);
+                $("#myModal").modal();
+            },
+            complete: function(){
+                $('.ajax-loader').css("visibility", "hidden");
+            }
+        });
+    }
+</script>
+<div class="col-12">
+  <div class="col-md-12">
+    <h3 class="row">OFERTAS</h3>
+    <div class="row contenedor-filtro">
+        <div class="contenedor-searchbar">
+            <select name="establecimiento" onchange="location = '?estable='+this.value;">
+                <option>--- Establecimiento: ---</option>
+                <option value=0>Todos</option>
+                {% for data in estab %}
+                    <option value={{data.id_establecimiento}}>{{data.nombre}}</option>
+                {% endfor %}
+            </select>
+            <input type='text' class="form-control" id='buscar' placeholder="Buscar">
+            <div class = "boton1"><a class="btn btn-sucess" id="nuevo-btn" href="añadir_ofertas/">NUEVA OFERTA </a></div>
+        </div>
+    </div>
+
+    <div class="contenedor-notificaciones">
+        {% if datos %}
+        <table class="table notificaciones">
+            <thead>
+                <tr>
+                <th> </th>
+                <th>Nombre</th>
+                <th>Descripción</th>
+                <th>Establecimiento</th>
+                <th>Precio sin oferta</th>
+                <th>Precio Oferta</th>
+                <th>Cantidad Disponible</th>
+                <th>Estado</th>
+                <th> </th>
+                <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for data in datos %}
+                    <tr>
+                    <td><a class="btn btn-lg" href="editar_ofertas/{{ data.id_oferta}}"><img class="img-producto" src={{data.photo_url}}></a></td>
+                    <td>{{data.nombre}}</td>
+                    <td>{{data.descripcion}}</td>
+                    <td>{{data.id_establecimiento}}</td>
+                    <td>{{data.precioAntes}}</td>
+                    <td>{{data.precio}}</td>
+                    <td>{{data.cantidad}}</td>
+                    <td>
+                        <label class="switch">
+                        {% if data.estado == "A" %}
+                            <input type="checkbox" class="checkbox" onclick="cambiarEstado({{data.id_oferta}})" checked/>
+                        {% else %}
+                            <input type="checkbox" class="checkbox" onclick="cambiarEstado({{data.id_oferta}})"/>
+                        {% endif %}
+                            <div class=""></div>
+                        </label>
+                    </td>
+                    <td>
+                        <div class = "iconos">
+                        <a class="btn btn-sm edit" href="editar_ofertas/{{ data.id_oferta }}"><img class="img-editar" src="{% static 'img/iconos_administrador/editar.png' %}"></a>
+                        </div>
+                    </td>
+                    <td>
+                        <div class = "iconos">
+                             <a class="btn btn-sm" href="eliminar_ofertas/{{data.id_oferta}}" onclick="return confirm('¿Está seguro que desea eliminar este elemento?');"><img class="img-borrar" src="{% static 'img/iconos_administrador/borrar.png' %}"></a>
+                        </div>
+                    </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <div class="total-clientes">
+            <span>Total Ofertas: </span><span>{{datos.paginator.count}}</span>
+        </div>
+        {% else %}
+        <h3 style="display: table;">No existen datos para presentar</h3>
+        {% endif %}
+    </div>
+    {% if datos.has_other_pages %}
+      <ul class="pagination">
+        {% if datos.has_previous %}
+            {% if buscar == None %}
+                <li><a href="./?page={{ datos.previous_page_number }}">Anterior</a></li>
+            {% else %}
+                <li><a href="./?page={{ datos.previous_page_number }}&busqueda={{buscar}}">Anterior</a></li>
+            {% endif %}
+        {% else %}
+          <li class="disabled"><span>Anterior</span></li>
+        {% endif %}
+        <li class="active"><span>{{ datos.number }} <span class="sr-only">(current)</span></span></li>
+        {% if datos.has_next %}
+            {% if buscar == None %}
+                <li><a href="./?page={{ datos.next_page_number }}">Siguiente</a></li>
+            {% else %}
+                <li><a href="./?page={{ datos.next_page_number }}&busqueda={{buscar}}">Siguiente</a></li>
+            {% endif %}
+        {% else %}
+          <li class="disabled"><span>Siguiente</span></li>
+        {% endif %}
+      </ul>
+    {% endif %}
+  </div>
+</div>
+
+<div id="modal-div"></div>

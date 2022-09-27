@@ -1,0 +1,146 @@
+{% load static %}{% include 'Shared/header.html' %}{% include 'Shared/navbar.html' %}{% include 'Shared/sidebar.html' %}
+<style>
+    .upload-container1 .img-subir-preview1 {
+        height: 9rem;
+        display: none;
+    }
+
+    .upload-container1 .img-default1 {
+        width: 10rem;
+        height: 10rem;
+    }
+
+    .upload-container1 {
+        height: 10rem;
+        width: 22rem;
+        text-align: center;
+        background-color: #EDEEF0;
+        border-radius: 10px;
+    }
+
+    .input {
+        background-color: #D8D9DD;
+        border-radius: 8px;
+    }
+
+    .modal-footer {
+        text-align: center;
+        display: block;
+    }
+
+    .btn-warning {
+        background-color: #87868A;
+    }
+
+    .btn-sucess {
+        background: linear-gradient(to right, #2153FF, #0F195E);
+    }
+
+    .btn {
+        color: white;
+        width: 9rem;
+    }
+
+    textarea[name="descripcion1"] {
+        height: 10rem;
+    }
+
+    h2 {
+        color: #0F195E;
+        font-family: calibri;
+        font-weight: bold;
+    }
+
+    select {
+        width: 10rem;
+    }
+
+    .lbl {
+        text-align: center;
+        width: 100%;
+    }
+</style>
+<div id="popup" class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+            <a href = "../">
+                <h2 class="modal-title">Ver Clientes</h2>
+            </a>
+
+        </div>
+
+        {% csrf_token %}
+        <div class="modal-body">
+            <div class="row contenedor-notificaciones">
+                <div class="col-md-6 contenedor-texto">
+                    <div class="input-container">
+                        <p><b>Nombre: </b>{{data.nombre}} {{data.apellido}}</p>
+                    </div>
+                    <br>
+                    <div class="input-container">
+                        <p><b>Teléfono: </b>{{data.telefono}}</p>
+                    </div>
+                    <br>
+                    <div class="input-container">
+                        <p><b>Correo: </b>{{data.usuario.correo}}</p>
+                    </div>
+                    <div class="input-container">
+                        <p><b>Dirección: </b>{{data.direccion}}</p>
+                    </div>
+                    <div class="input-container">
+                        <div class="row precio-stock">
+                            <div class="col-md-6 precio">
+                                <p><b>Cédula: </b>{{data.usuario.cedula}}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="input-container">
+                        <p><b>Fecha de registro: </b>{{data.usuario.registro|date:"d/m/Y"}}</p>
+                    </div>
+                    <br>
+                </div>
+                <div class="col-md-6 contenedor">
+                    <div class=" center-block">
+
+                            <img class="img-default1" id="img-default1"
+                                src = {{data.usuario.photo_url}} >
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    var inputImage1 = document.getElementById("image1");
+    var previewImage1 = document.getElementById("img-preview1");
+    var previewDefault1 = document.getElementById("img-default1");
+
+    inputImage1.addEventListener("change", function () {
+        var file1 = this.files[0];
+        if (file1) {
+            var reader1 = new FileReader();
+
+            previewDefault1.style.display = "none";
+            previewImage1.style.display = "block";
+            previewImage1.style.margin = "auto";
+
+            reader1.addEventListener("load", function () {
+                previewImage1.setAttribute("src", this.result);
+
+            });
+            reader1.readAsDataURL(file1);
+        }
+
+    });
+
+
+    document.getElemtById("nombre").val = {{ datos_mostrar.nombre }};
+    document.getElemtById("descripcion").val = {{ datos_mostrar.descripcion }};
+    document.getElemtById("precioAntes").val = {{ datos_mostrar.precioAntes }};
+    document.getElemtById("precio").val = {{ datos_mostrar.precio }};
+    document.getElemtById("stock").val = {{ datos_mostrar.cantidad }};
+
+</script>
+<script type="text/javascript" src="{% static 'js/formulario.js' %}"></script>

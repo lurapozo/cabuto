@@ -1,0 +1,219 @@
+{% load static %}{% include 'Shared/header.html' %}{% include 'Shared/navbar.html' %}{% include 'Shared/sidebar.html' %}
+<style>
+    .upload-container1 .img-subir-preview1{
+        height: 9rem;
+        display: none;
+    }
+
+    .upload-container1 .img-default1{
+        height: 9rem;
+    }
+
+    .upload-container1{
+	    height:10rem;
+	    width: 22rem;
+	    text-align:center;
+	    background-color:#EDEEF0;
+	    border-radius: 10px;
+    }
+
+    .input{
+   	    background-color:#D8D9DD;
+        border-radius: 8px;
+    }
+
+    .modal-footer{
+	    text-align:center;
+	    display: block;
+    }
+
+    .btn-warning{
+        background-color: #87868A;
+    }
+
+    .btn-sucess{
+        background: linear-gradient(to right, #2153FF, #0F195E);
+    }
+
+    .btn{
+        color: white;
+        width: 9rem;
+    }
+
+    textarea[name="descripcion1"]{
+        height: 10rem;
+    }
+
+    h2{
+        color: #0F195E;
+        font-family: calibri;
+        font-weight: bold;
+    }
+
+    select{
+        width: 10rem;
+    }
+
+    .lbl{
+        text-align: center;
+        width: 100%;
+    }
+
+    #the-count {
+        float: right;
+        padding: 0.1rem 0 0 0;
+        font-size: 0.875rem;
+    }
+
+</style>
+<div id="popup" class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 class="modal-title">EDITAR PRODUCTO</h2>
+                <!--<button class="close" type="button" data-dismiss="modal" aria-label="close">
+                    <span aria-hidden="true">&times;</span>
+                </button>-->
+        </div>
+        <form action="" method="POST" enctype="multipart/form-data" class="col-md-12">
+            {% csrf_token %}
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="input-container1">
+                            <div class="upload-container1 center-block">
+					            <label class="btn btn-default btn-sm center-block btn-file lbl" id="lbl1">
+                                 <input type="file" style="display: none;" accept=".jpg, .png, .jpeg, .svg" id="input-image1"  class="form-control" name="image1" >
+                                    <img class="img-subir-preview1 center-block" id="img-preview1">
+                                    <img class="img-default1" id="img-default1" src="{{datos_mostrar.photo_url}}">
+                                </label>
+                            </div>
+                        </div>
+                        <br>
+                        <div class="input-container1">
+					        <label>Nombre del Producto</label>
+					        <input type="text" class="form-control input" value="{{datos_mostrar.nombre}}" id="nombre1" name="nombre1" required>
+				        </div>
+                        <br>
+                        <div class="input-container1">
+					        <label>Establecimiento: </label>
+                            <br>
+                            {% for establecimiento in estab %}
+                                {% if establecimiento in arrPxZ%}
+                                {% for estabXprod in prodXestab %}
+                                {% if estabXprod.id_establecimiento.id_establecimiento == establecimiento.id_establecimiento %}
+                                    <input class="input" type="checkbox" name='checkEstab' id='checkEstab' value={{establecimiento.id_establecimiento}} checked>
+                                    <label for={{establecimiento.id_establecimiento}}>{{establecimiento.nombre}}</label><br>
+                                {% endif %}
+                                {% endfor %}
+                                {% else %}
+                                    <input class="input" type="checkbox" name='checkEstab' id='checkEstab' value={{establecimiento.id_establecimiento}}>
+                                    <label for={{establecimiento.id_establecimiento}}>{{establecimiento.nombre}}</label><br>
+                                {% endif %}
+                            {% endfor %}
+				        </div>
+                    </div>
+                    <div class="col-md-6">
+				        <div class="input-container1">
+					        <label>Categoría</label>
+                            <br>
+                            <select name="id_categoria1" id="id_categoria1" required>
+                            {% for entry in data %}
+                                {% if datos_mostrar.id_categoria.id_categoria == entry.id_categoria %}
+                                    <option class="input" value={{entry.id_categoria}} name="id_categoria1" selected>{{entry.nombre}}</option>
+                                {% else %}
+                                    <option class="input" value={{entry.id_categoria}} name="id_categoria1" >{{entry.nombre}}</option>
+                                {% endif %}
+                            {% endfor %}
+                            </select>
+				        </div>
+                        <br>
+                         <div class="input-container1">
+					        <label>Precio</label>
+                            <input type="number" step="0.001" class="form-control input" value={{datos_mostrar.precio}} id=precio1"" name="precio1" required>
+				        </div>
+                        <br>
+                        <div class="input-container1">
+                            <label>Cantidad del Stock</label>
+					        <input type="number" class="form-control input" value={{datos_mostrar.stock_disponible}} id="stock_disponible1" name="stock_disponible1" required>
+				        </div>
+                        <br>
+                        <div class="input-container1">
+					        <label>Descripción</label>
+					        <textarea class="form-control input" name="descripcion1" maxlength="300"  required>{{datos_mostrar.descripcion}}</textarea>
+                            <div id="the-count">
+                                <span id="current">0</span>
+                                <span id="maximum">/ 300</span>
+                            </div>
+					   </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-warning" onclick="location.href='../../'" id="limpiarCampos-btn" type="button" data-dismiss="modal">Cancelar</button>
+                <button class="btn btn-sucess" id="guardar-btn" type="submit">Editar</button>
+            </div>
+        </form>
+    </div>
+</div>
+<script>
+    var inputImage1=document.getElementById("input-image1");
+    var previewImage1=document.getElementById("img-preview1");
+    var previewDefault1=document.getElementById("img-default1");
+    console.log({{datos_mostrar.id_producto}})
+
+    inputImage1.addEventListener("change", function(){
+        var file1 = this.files[0];
+        if (file1){
+            var reader1= new FileReader();
+
+            previewDefault1.style.display="none";
+            previewImage1.style.display="block";
+            previewImage1.style.margin="auto";
+
+            reader1.addEventListener("load", function(){
+                previewImage1.setAttribute("src", this.result);
+
+            });
+            reader1.readAsDataURL(file1);
+        }
+
+    });
+
+     $('textarea').keyup(function () {
+
+        var characterCount = $(this).val().length,
+            current = $('#current'),
+            maximum = $('#maximum'),
+            theCount = $('#the-count');
+
+        current.text(characterCount);
+
+        //Colores
+        if (characterCount < 70) {
+            current.css('color', '#666');
+        }
+        if (characterCount > 70 && characterCount < 90) {
+            current.css('color', '#6d5555');
+        }
+        if (characterCount > 100 && characterCount < 150) {
+            current.css('color', '#793535');
+        }
+        if (characterCount > 150 && characterCount < 200) {
+            current.css('color', '#841c1c');
+        }
+        if (characterCount > 200 && characterCount < 250) {
+            current.css('color', '#8f0001');
+        }
+
+        if (characterCount >= 250) {
+            maximum.css('color', '#8f0001');
+            current.css('color', '#8f0001');
+            theCount.css('font-weight', 'bold');
+        } else {
+            maximum.css('color', '#666');
+            theCount.css('font-weight', 'normal');
+        }
+    });
+
+</script>
+<script type="text/javascript" src="{% static 'js/formulario.js' %}"></script>

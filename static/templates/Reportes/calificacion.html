@@ -1,0 +1,92 @@
+{% load static %}
+<style>
+    .modal-dialog{
+        max-width: 35rem;
+    }
+    .modal-content{
+        border-radius: .7rem;
+        height: 90%;
+    }
+    .modal-body{
+        padding: 3rem 0rem;
+        overflow-y: auto;
+        margin:auto;
+    }
+    .modal-header{
+        align-items: center;
+        border-width: 0px;
+        padding: 2rem;
+        padding-bottom: 0rem;
+    }
+    .modal-header .nombre-cliente{
+        margin: 0;
+    }
+    .nombre-cliente{
+        font-weight: bolder;
+        margin-bottom: 1rem;
+        color: #0F195E;
+        padding: 0px !important;
+    }
+    .input-container .input {
+        background: #D8D9DD;
+        color: #0F195E;
+        font-weight: bold;
+        width: 20rem;
+    }
+    label{
+        color: #8f8f91;
+    }
+    .containerdivs {
+        border: 0;
+        position: relative;
+        width: 8rem;
+        margin:auto;
+    }
+    .stars{
+       max-width: 8rem;
+     }
+
+
+</style>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $.mCustomScrollbar.defaults.scrollButtons.enable=true;
+        $("#body-modal").mCustomScrollbar({
+            theme:"light"
+        });
+    });
+</script>
+<div id="myModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <!-- Modal content-->
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 class="nombre-cliente">Calificación</h3>
+            <button type="button" class="close cerrar-modal" data-dismiss="modal">&times;</button>
+        </div>
+        <div id="body-modal" class="modal-body mCustomScrollbar">
+            <div class="input-container">
+                <label>Cliente:</label>
+                <input type="text" class="form-control input" name="nombre" disabled value="{{usuario.nombre}} {{usuario.apellido}}">
+			</div>
+			<br>
+			<div class="input-container">
+                <label>Calificación:</label>
+                <div class="containerdivs" >
+                    <div>
+                    <img class="stars" src="https://i.ibb.co/896M3N2/stars-blank.png" alt="img">
+                    </div>
+                    <div class="cornerimage" style="--rating: {{data.calificacion}};">
+                    <img class="stars" src="https://i.ibb.co/2vgmBx9/stars-full.png" alt="">
+                    </div>
+                </div>
+            </div>
+            <br>
+            <div class="input-container">
+		        <label>Descripción:</label>
+		        <textarea class="form-control input" name="mensaje" rows="5" disabled style="resize: none;">{{data.justificacion}}</textarea>
+	        </div>
+        </div>
+    </div>
+  </div>
+</div>

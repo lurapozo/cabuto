@@ -1,0 +1,240 @@
+{% load static %}
+{% include 'Shared/header.html' %}
+{% include 'Shared/sidebar.html' %}
+{% include 'Shared/navbar.html' %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/css/bootstrap-select.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.14/js/bootstrap-select.min.js"></script>
+
+<style>
+    h3 {
+        padding-right: 10px;
+        padding-left: 5%;
+        font-weight: bold;
+        color: #0F195E;
+    }
+
+    .botones{
+        text-align:center;
+	    display: block;
+    }
+
+    .btn-warning{
+        background-color: #87868A;
+        color: white;
+        font-weight: bolder;
+        font-size: 10px;
+        width: 9rem;
+        height: 2.5rem;
+    }
+
+    .btn-sucess{
+        background: linear-gradient(to right, #2153FF, #0F195E);
+        color: white;
+        font-weight: bolder;
+        font-size: 10px;
+        width: 9rem;
+        height: 2.5rem;
+    }
+    .contenedor-notificaciones{
+        margin:auto;
+        padding: 20px 10px;
+        border-radius:15px;
+        min-width: min-content;
+        max-width: 85%;
+    }
+    .notificaciones-texto{
+        display: flex;
+        justify-content: flex-start;
+        padding-top: 4rem;
+        align-items: center;
+    }
+    .notificaciones-texto h5{
+        color: #FE3A00;
+        font-size: 15px;
+    }
+    .contenedor-imagen, .contenedor-texto{
+	    display:block;
+    }
+    .imagen{
+        height:15rem;
+	    text-align:center;
+	    background-color:#EDEEF0;
+	    border-radius: 10px;
+	    display:flex;
+	    margin-bottom: 10px;
+    }
+    .imagen img{
+        width: auto;
+        height: 20%;
+        margin: auto;
+    }
+    .contenedor-searchbar{
+        display: flex;
+        align-items: center;
+        border-radius: 5px;
+        height: 40px;
+        font-size: 1rem;
+    }
+    .boton1 .btn,
+    #nuevo-btn{
+        margin: auto;
+        text-align: center;
+        display:block;
+        background: linear-gradient(to right, #2153FF, #0F195E);
+        color: white;
+        font-weight: bolder;
+        font-size: 10px;
+        width: 9rem;
+        height: 2.5rem;
+    }
+
+
+    #nuevo-btn{
+        overflow:hidden;
+        position: relative;
+    }
+    #nuevo-btn input.upload {
+        position: absolute;
+        top: 0;
+        right: 0;
+        margin: 0;
+        padding: 0;
+        font-size: 20px;
+        cursor: pointer;
+        opacity: 0;
+        filter: alpha(opacity=0);
+    }
+    #nuevo-btn p{
+        color: white;
+        margin: 5px;
+        font-weight: bolder;
+        font-size: 10px;
+        font-family: inherit;
+    }
+    .input-container .input, select {
+        background: #EDEEF0;
+    }
+    .notificaciones-link{
+        cursor: pointer;
+    }
+    .notificacion {
+        margin-top: 5px;
+        margin-left:15px;
+    }
+
+</style>
+<script type="text/javascript">
+
+    $(document).ready(function() {
+        $('.selectpicker').selectpicker();
+        $("#guardar-btn").click(function() {
+    	    if (verificarCampos()) {
+    		    $("#form").submit()
+    		    location = '/ofertas/';
+        	}
+        });
+    });
+
+    var loadImage = function(event) {
+        var output = document.getElementById('img-subir');
+        output.src="{% static 'img/iconos_administrador/agregar_imagen.png' %}"
+        output.style="height:100%;";
+        output.src = URL.createObjectURL(event.target.files[0]);
+        output.onload = function() {
+            URL.revokeObjectURL(output.src) // free memory
+        }
+    };
+
+    function limpiarCampos() {
+    	var inputs = $(".input")
+    	//LIMPIANDO INPUTS
+    	inputs.each(function() {
+    		$(this).val("")
+    	})
+    }
+
+    function verificarCampos() {
+    	var verificacion = true
+    	var inputs = $(".input")
+    	//VERIFICANDO CADA CAMPO
+    	inputs.each(function() {if ($(this).val() == "") {verificacion = false}})
+    	//DISPARANDO ALERTA SI ES NECESARIA
+    	if (! verificacion) {alert("Por favor ingrese la información requerida.")}
+    	return verificacion
+    }
+
+</script>
+<div class="col-12">
+  <div class="col-md-12">
+    <div class="row notificaciones-texto">
+        <h3>OFERTAS</h3>
+    </div>
+    <form action="" method="POST" enctype="multipart/form-data" class="col-md-12">
+        {% csrf_token %}
+        <div class="row contenedor-notificaciones">
+            <div class="col-md-6 contenedor-texto">
+                <div class="input-container">
+			        <label>Nombre de la Oferta</label>
+                    <input type="text" class="form-control input" name="nombre" required>
+		        </div>
+                <br>
+                <div class="input-container">
+                    <label>Descripción de la Oferta</label>
+                    <textarea class="form-control input" name="descripcion" required></textarea>
+
+		        </div>
+                <br>
+                <div class="input-container">
+                    <div class = "row precio-stock">
+                        <div class = "col-md-6 precio">
+                            <label>Precio sin oferta</label>
+			                <input type="number" step="0.001" class="form-control input" name="precioAntes" required>
+			                <label>Precio de la oferta</label>
+			                <input type="number" step="0.001" class="form-control input" name="precio" required>
+                        </div>
+                        <div class = "col-md-6 stock">
+                            <label>Cantidad</label>
+			                <input type="number" class="form-control input" name="stock" required>
+                            <div class="input-container1">
+                                <label>Establecimiento</label>
+                                <br>
+                                <select name="id_establecimiento4" id="id_establecimiento4" required>
+                                {% for entry in estab4 %}
+                                    <option class="input" value={{entry.id_establecimiento}} name="id_establecimiento4" >{{entry.nombre}}</option>
+                                {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row notificacion">
+                            <div class="input-container">
+                                <input type='hidden' value='no' name='notificacion'>
+                                <input type="checkbox" id="notificacion" name="notificacion" value="si">
+                                <label for="notificacion">Crear con notificación automática</label>
+                            </div>
+		                </div>
+                        <br>
+                    </div>
+
+		        </div>
+		        <br>
+            </div>
+            <div class="col-md-6 contenedor-imagen">
+                <div class="imagen">
+                    <img id="img-subir"class="img-subir center-block" src="{% static 'img/iconos_administrador/agregar_imagen.png' %}">
+                </div>
+                <div id="nuevo-btn" class="btn btn-primary">
+                    <p>SUBIR IMAGEN</p>
+                    <input class="upload" type="file" accept=".jpg, .png, .jpeg, .svg" class="form-control input" onchange="loadImage(event)" name="image" required>
+                </div>
+            </div>
+        </div>
+        <div class = "botones">
+            <button class="btn btn-warning" onclick="location.href='../../ofertas/'" id="limpiarCampos-btn" type="button" data-dismiss="modal">CANCELAR</button>
+            <!--<button class="btn btn-sucess" href="/ofertas/"  id="guardar-btn" >CREAR OFERTA</button>-->
+            <button class="btn btn-sucess" id="guardar-btn" type="submit">CREAR OFERTA</button>
+        </div>
+        <!--<div class = "boton1"><button class="btn btn-sucess" id="nuevo-btn" >CREAR OFERTA</button></div>-->
+    </form>
+
+  </div>
+</div>

@@ -1,0 +1,393 @@
+{% load static %}
+{% include 'Shared/header.html' %}
+{% include 'Shared/sidebar.html' %}
+{% include 'Shared/navbar.html' %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/css/bootstrap-select.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.15.1/moment.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.14/js/bootstrap-select.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/i18n/defaults-es_ES.js"></script>
+
+
+<style>
+    h3 {
+        padding: 5% 0% 5% 5%;
+        font-weight: bold;
+        color: #0F195E;
+        margin: auto;
+    }
+    .contenedor-pagos{
+        margin:auto;
+        padding: 20px 10px;
+        border-radius:15px;
+        min-width: min-content;
+        max-width: 85%;
+    }
+    .pagos{
+        text-align: center;
+    }
+    thead th{
+        background-color: #FE3A00;
+        color:white;
+        padding: 7px !important;
+        vertical-align: middle !important;
+        line-height: 1rem;
+        border:0px:
+    }
+    tr th:first-child {
+      border-top-left-radius: 7px;
+      border-bottom-left-radius: 7px;
+    }
+    tr th:last-child {
+      border-top-right-radius: 7px;
+      border-bottom-right-radius: 7px;
+    }
+    tr th:last-child,
+    tr td:last-child{
+      width:20%;
+    }
+    tbody td{
+        border-top: 2px solid rgba(15,25,94,0.3) !important;
+        border-bottom: 1px solid rgba(15,25,94,0.3);
+        padding: 1.1rem !important;
+        vertical-align: middle !important;
+        color:#444242;
+    }
+    tr:first-child td {
+        border-top: none !important;
+    }
+    table th{
+        border: none !important;
+    }
+    .btn-new{
+        font-weight: bold;
+        color: #0F195E;
+        background: #D8D9DD;
+        padding: 5px 20px 5px 20px;
+        border-radius: 5px;
+        vertical-align: middle;
+        height: 40px;
+        font-size: 1rem;
+        width: 40%;
+    }
+
+    .contenedor-filtro{
+        width: 100%;
+        display: flex;
+        justify-content: flex-end;
+        padding-top: 50px;
+        align-items: center;
+    }
+
+    #buscar{
+        width:1rem;
+        height: 1rem;
+        margin: auto 0px auto 10px;
+    }
+    .contenedor-fecha{
+        width: 100%;
+        display: flex;
+        justify-content: flex-end;
+        margin-bottom: 20px;
+        align-items: center;
+    }
+    #fromDate, #toDate{
+        width: min-content;
+        color: #0F195E;
+        background: #D8D9DD;
+    }
+    #toDate{
+        margin-right: 15px;
+    }
+    #buscador{
+        padding-right: 30px;
+        margin: 10px 0px;
+        width: 12rem;
+        background: #D8D9DD;
+    }
+    .texto-filtro{
+        margin: auto 15px auto 10px;
+    }
+    .total-pagos{
+        width: 90%;
+        border-top: 3px solid #0F195E;
+        padding-top: 10px;
+        margin-top: 2rem;
+        color: #444242;
+    }
+    .total-pagos span:first-child{
+        font-weight: bold;
+        padding-right: 25px;
+        padding-left: 35%;
+        color: #0F195E;
+    }
+    .pagination{
+        justify-content: center;
+        margin-top:10px;
+    }
+    .pagination .active{
+        width: 1.6rem;
+        background: #0f195e;
+        color: white;
+        text-align: center;
+        border-radius: 0.5rem;
+        margin: 0px 20px;
+        height: 1.5rem;
+        font-weight: bolder;
+        font-size: 14px;
+        padding-top: 2px;
+    }
+    .pagination li:first-child a,
+    .pagination li:last-child a,
+    .pagination li:first-child span,
+    .pagination li:last-child span{
+        color: #0f195e;
+        font-size: 13px;
+    }
+
+.containerdiv {
+    border: 0;
+    position: relative;
+    width: 7rem;
+    margin: auto;
+}
+.cornerimage {
+    width: calc(var(--rating) / 5 * 100%);
+    border: 0;
+    position: absolute;
+    top: 0;
+    left: 0;
+    overflow: hidden;
+}
+.star{
+   max-width: 7rem;
+ }
+ .total-clientes{
+        width: 90%;
+        border-top: 3px solid #0F195E;
+        padding-top: 10px;
+        margin-top: 2rem;
+        color: #444242;
+    }
+    .total-clientes span:first-child{
+        font-weight: bold;
+        padding-right: 25px;
+        padding-left: 35%;
+        color: #0F195E;
+    }
+
+</style>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('.selectpicker').selectpicker();
+        var now = new Date();
+        var month = (now.getMonth() + 1);
+        var day = now.getDate();
+        if (month < 10)
+            month = "0" + month;
+        if (day < 10)
+            day = "0" + day;
+        var today = now.getFullYear() + '-' + month + '-' + day;
+        var to = document.getElementById("toDate");
+        to.setAttribute("max", today);
+        var from = document.getElementById("fromDate");
+        from.setAttribute("max", today);
+        document.getElementById("fromDate").onchange = function () {
+            var input = document.getElementById("toDate");
+            input.setAttribute("min", this.value);
+        }
+        document.getElementById("toDate").onchange = function () {
+            var input = document.getElementById("fromDate");
+            input.setAttribute("max", this.value);
+        }
+        $('#fromDate').val("{{desde}}");
+        $('#toDate').val("{{hasta}}");
+        if("{{filtro}}"!="None"){
+            $('#filtro').val("{{filtro}}");
+            $('.selectpicker').selectpicker('refresh')
+        }
+    });
+    function calificacion(id){
+        console.log(id)
+        var modalDiv = $("#modal-div");
+        $.ajax({
+            beforeSend: function(){
+                $('.ajax-loader').css("visibility", "visible");
+            },
+            url: "/calificacion/"+id,
+            success: function(data) {
+                modalDiv.html(data);
+                $("#myModal").modal();
+            },
+            complete: function(){
+                $('.ajax-loader').css("visibility", "hidden");
+            }
+          });
+
+    }
+    function buscarPagos(){
+        var filtro = document.getElementById("filtro").value;
+        var input=document.getElementById("buscador")
+        var fromDate = document.getElementById("fromDate").value;
+        var toDate = document.getElementById("toDate").value;
+        console.log(input.value)
+        if(input.value != undefined && input.value != ""){
+            if(fromDate!=""){
+                if(toDate!=""){
+                    location = '?filtro='+filtro+'&busqueda='+input.value+'&from='+fromDate+'&to='+toDate;
+                }else{
+                    location = '?filtro='+filtro+'&busqueda='+input.value+'&from='+fromDate;
+                }
+            }else if(toDate!=""){
+                location = '?filtro='+filtro+'&busqueda='+input.value+'&to='+toDate;
+            }
+        }else{
+            if(fromDate!=""){
+                if(toDate!=""){
+                    location = '?from='+fromDate+'&to='+toDate;
+                }else{
+                    location = '?from='+fromDate;
+                }
+            }else if(toDate!=""){
+                location = '?to='+toDate;
+            }
+        }
+
+    }
+</script>
+<div class="col-12">
+  <div class="col-md-12">
+    <div class="row">
+        <h3 class="col-md-6">PAGOS REALIZADOS</h3>
+        <div class="col-md-6 contenedor-filtro">
+            <h6 class="texto-filtro">Filtrar por:</h6>
+            <select id="filtro" class="selectpicker" data-style="btn-new">
+            <option value="tPago" selected>Tipo de pago</option>
+            <option value="cliente">Cliente</option>
+            </select>
+        </div>
+    </div>
+    <div class="row contenedor-fecha">
+        <h6 class="texto-filtro">Desde:</h6>
+        <input type='date' class="form-control" id='fromDate' />
+        <h6 class="texto-filtro">Hasta:</h6>
+        <input type='date' class="form-control" id='toDate' />
+        <input type='text' class="form-control" id='buscador' placeholder="Buscar">
+        <img id="buscar" onclick="buscarPagos()" src="{% static 'img/iconos_administrador/buscar_azul.png' %}">
+    </div>
+    <div class="contenedor-pagos">
+
+    {% if datos %}
+        <table class="table pagos">
+      <thead>
+        <tr>
+          <th>Cliente</th>
+          <th>Tipo de pago</th>
+          <th>Calificación</th>
+          <th>Monto</th>
+          <th>Fecha</th>
+          <th>Factura</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for data in datos %}
+          <tr>
+            <td>{{data.pedido.cliente.nombre}} {{data.pedido.cliente.apellido}}</td>
+            <td>{{data.pedido.tipo_pago}}</td>
+            <td>
+                <div class="containerdiv" onclick="calificacion({{data.pedido.id_pedido}})">
+                    <div>
+                    <img class="star" src="https://i.ibb.co/896M3N2/stars-blank.png" alt="img">
+                    </div>
+                    <div class="cornerimage" style="--rating: {{data.calificacion}};">
+                    <img class="star" src="https://i.ibb.co/2vgmBx9/stars-full.png" alt="">
+                    </div>
+                </div>
+            </td>
+            <td>${{data.pedido.total|floatformat:2 }}</td>
+            <td>{{data.pedido.fecha|date:"d/m/Y"}}</td>
+            <td></td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <div class="total-clientes">
+        <span>Total Pagos: </span><span>{{datos.paginator.count}}</span>
+    </div>
+    {% else %}
+        <h3 style="display: table;">No existen datos para presentar</h3>
+    {% endif %}
+    </div>
+    {% if datos.has_other_pages %}
+      <ul class="pagination">
+        {% if datos.has_previous %}
+            {% if filtro == None %}
+                {% if desde != None %}
+                    {% if hasta != None %}
+                        <li><a href="./?page={{ datos.previous_page_number }}&from={{desde}}&to={{hasta}}">Anterior</a></li>
+                    {% else %}
+                        <li><a href="./?page={{ datos.previous_page_number }}&from={{desde}}">Anterior</a></li>
+                    {% endif %}
+                {% else %}
+                    {% if hasta != None %}
+                        <li><a href="./?page={{ datos.previous_page_number }}&filtro={{ filtro }}&busqueda={{ buscar }}&to={{hasta}}">Anterior</a></li>
+                    {% else %}
+                        <li><a href="./?page={{ datos.previous_page_number }}">Anterior</a></li>
+                    {% endif %}
+                {% endif %}
+            {% else %}
+                {% if desde != None %}
+                    {% if hasta != None %}
+                        <li><a href="./?page={{ datos.previous_page_number }}&filtro={{ filtro }}&busqueda={{ buscar }}&from={{desde}}&to={{hasta}}">Anterior</a></li>
+                    {% else %}
+                        <li><a href="./?page={{ datos.previous_page_number }}&filtro={{ filtro }}&busqueda={{ buscar }}&from={{desde}}">Anterior</a></li>
+                    {% endif %}
+                {% else %}
+                    {% if hasta != None %}
+                        <li><a href="./?page={{ datos.previous_page_number }}&filtro={{ filtro }}&busqueda={{ buscar }}&to={{hasta}}">Anterior</a></li>
+                    {% else %}
+                        <li><a href="./?page={{ datos.previous_page_number }}&filtro={{ filtro }}&busqueda={{ buscar }}">Anterior</a></li>
+                    {% endif %}
+                {% endif %}
+            {% endif %}
+        {% else %}
+          <li class="disabled"><span>Anterior</span></li>
+        {% endif %}
+        <li class="active"><span>{{ datos.number }} <span class="sr-only">(current)</span></span></li>
+        {% if datos.has_next %}
+            {% if filtro == None %}
+                {% if desde != None %}
+                    {% if hasta != None %}
+                        <li><a href="./?page={{ datos.next_page_number }}&from={{desde}}&to={{hasta}}">Siguiente</a></li>
+                    {% else %}
+                        <li><a href="./?page={{ datos.next_page_number }}&from={{desde}}">Siguiente</a></li>
+                    {% endif %}
+                {% else %}
+                    {% if hasta != None %}
+                        <li><a href="./?page={{ datos.next_page_number }}&filtro={{ filtro }}&busqueda={{ buscar }}&to={{hasta}}">Siguiente</a></li>
+                    {% else %}
+                        <li><a href="./?page={{ datos.next_page_number }}">Siguiente</a></li>
+                    {% endif %}
+                {% endif %}
+            {% else %}
+                {% if desde != None %}
+                    {% if hasta != None %}
+                        <li><a href="./?page={{ datos.next_page_number }}&filtro={{ filtro }}&busqueda={{ buscar }}&from={{desde}}&to={{hasta}}">Siguiente</a></li>
+                    {% else %}
+                        <li><a href="./?page={{ datos.next_page_number }}&filtro={{ filtro }}&busqueda={{ buscar }}&from={{desde}}">Siguiente</a></li>
+                    {% endif %}
+                {% else %}
+                    {% if hasta != None %}
+                        <li><a href="./?page={{ datos.next_page_number }}&filtro={{ filtro }}&busqueda={{ buscar }}&to={{hasta}}">Siguiente</a></li>
+                    {% else %}
+                        <li><a href="./?page={{ datos.next_page_number }}&filtro={{ filtro }}&busqueda={{ buscar }}">Siguiente</a></li>
+                    {% endif %}
+                {% endif %}
+            {% endif %}
+        {% else %}
+          <li class="disabled"><span>Siguiente</span></li>
+        {% endif %}
+      </ul>
+    {% endif %}
+  </div>
+</div>
+<div id="modal-div"></div>

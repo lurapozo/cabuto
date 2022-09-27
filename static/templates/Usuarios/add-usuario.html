@@ -1,0 +1,226 @@
+{% load static %}
+{% include 'Shared/header.html' %}
+{% include 'Shared/sidebar.html' %}
+{% include 'Shared/navbar.html' %}
+
+<style>
+    h3 {
+        padding-right: 10px;
+        padding-left: 5%;
+        font-weight: bold;
+        color: #0F195E;
+    }
+
+    .contenedor-notificaciones{
+        margin:auto;
+        padding: 20px 10px;
+        border-radius:15px;
+        min-width: min-content;
+        max-width: 85%;
+    }
+    .notificaciones-texto{
+        display: flex;
+        justify-content: flex-start;
+        padding-top: 4rem;
+        align-items: center;
+    }
+    .notificaciones-texto h5{
+        color: #FE3A00;
+        font-size: 15px;
+    }
+    .contenedor-imagen, .contenedor-texto{
+	    display:block;
+    }
+    .imagen{
+        height:15rem;
+	    text-align:center;
+	    background-color:#EDEEF0;
+	    border-radius: 10px;
+	    display:flex;
+	    margin-bottom: 10px;
+    }
+    .imagen img{
+        width: auto;
+        height: 20%;
+        margin: auto;
+    }
+    .contenedor-searchbar{
+        display: flex;
+        align-items: center;
+        border-radius: 5px;
+        height: 40px;
+        font-size: 1rem;
+    }
+    .boton1 .btn,
+    #nuevo-btn{
+        margin: auto;
+        text-align: center;
+        display:block;
+        background: linear-gradient(to right, #2153FF, #0F195E);
+        color: white;
+        font-weight: bolder;
+        font-size: 10px;
+        width: 7rem;
+        height: 2.5rem;
+    }
+    #nuevo-btn{
+        overflow:hidden;
+        position: relative;
+    }
+    #nuevo-btn input.upload {
+        position: absolute;
+        top: 0;
+        right: 0;
+        margin: 0;
+        padding: 0;
+        font-size: 20px;
+        cursor: pointer;
+        opacity: 0;
+        filter: alpha(opacity=0);
+    }
+    #nuevo-btn p{
+        color: white;
+        margin: 5px;
+        font-weight: bolder;
+        font-size: 10px;
+        font-family: inherit;
+    }
+    .input-container .input, select {
+        background: #EDEEF0;
+    }
+    .notificaciones-link{
+        cursor: pointer;
+    }
+    .modal-body{
+        padding:1rem 3rem;
+    }
+
+    #mapa{
+        height: 23rem;
+        width: 23rem;
+        margin: auto;
+    }
+    .cerrar-modal{
+        margin-top: 20px;
+        text-align: end;
+        margin-right: 20px;
+    }
+    #img-ubicacion{
+        height:3rem;
+        cursor: pointer;
+    }
+
+</style>
+<script type="text/javascript">
+
+    $(document).ready(function() {
+
+        $(document).on("submit", "form", function(event){
+            event.preventDefault();
+            $.ajax({
+                type: $(this).attr("method"),
+                beforeSend: function(){
+                    $('.ajax-loader').css("visibility", "visible");
+                },
+                url: $(this).attr("action"),
+                data: new FormData(this),
+                processData: false,
+                contentType: false,
+                success: function (data) {
+                    console.log(data)
+                    var modalDiv = $("#modal-div");
+                    modalDiv.html(data.html);
+                    $("#myModal").modal();
+                    if(data.result=="ok"){
+                        location = '/usuarios/';
+                    }
+                },
+                complete: function(){
+                    $('.ajax-loader').css("visibility", "hidden");
+                },
+                error: function (data) {
+                    console.log('An error occurred.');
+                    var modalDiv = $("#modal-div");
+                    modalDiv.html(data.responseText);
+                },
+            });
+        });
+        $('.notificaciones-link').click(function() {
+            limpiarCampos();
+            location = '/usuarios/';
+        });
+
+    });
+
+    function limpiarCampos() {
+    	var inputs = $(".input")
+    	//LIMPIANDO INPUTS
+    	inputs.each(function() {
+    		$(this).val("")
+    	})
+    }
+
+
+</script>
+<div class="col-12">
+  <div class="col-md-12">
+    <div class="row notificaciones-texto">
+        <h3 class="notificaciones-link">USUARIOS</h3>
+        <h5>> Nuevo usuario</h5>
+    </div>
+    <form action="" method="POST" enctype="multipart/form-data" class="col-md-12">
+        {% csrf_token %}
+        <div class="row contenedor-notificaciones">
+            <div class="col-md-6 contenedor-texto">
+                <div class="input-container">
+			        <label>Nombres:</label>
+                    <input type="text" class="form-control input" name="nombre" required>
+		        </div>
+                <br>
+                <div class="input-container">
+                    <label>Apellido:</label>
+			        <input type="text" class="form-control input" name="apellido" required>
+		        </div>
+                <br>
+                <div class="input-container">
+			        <label>Cédula:</label>
+			        <input type="text" class="form-control input" name="cedula" required>
+		        </div>
+		        <br>
+		        <div class="input-container">
+			        <label>Teléfono:</label>
+			        <input type="text" class="form-control input" name="telefono" required>
+		        </div>
+		        <br>
+            </div>
+            <div class="col-md-6 contenedor-texto">
+                <div class="input-container">
+			        <label>Correo electrónico:</label>
+                    <input type="text" class="form-control input" name="correo" required>
+		        </div>
+                <br>
+                <div class="input-container">
+                    <label>Rol:</label>
+			        <input type="text" class="form-control input" name="rol" value="administrador" required>
+		        </div>
+                <br>
+                <div class="input-container">
+			        <label>Usuario:</label>
+			        <input type="text" class="form-control input" name="usuario" required>
+		        </div>
+		        <br>
+		        <div class="input-container">
+			        <label>Contraseña:</label>
+			        <input type="text" class="form-control input" name="password" required>
+		        </div>
+		        <br>
+            </div>
+        </div>
+        <br>
+        <div class = "boton1"><button class="btn btn-sucess" id="nuevo-btn" >CREAR USUARIO</button></div>
+    </form>
+
+  </div>
+</div>
+
+<div id="modal-div"></div>

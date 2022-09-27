@@ -1,0 +1,308 @@
+{% load static %}
+<style>
+    .modal-dialog{
+        max-width: 35rem;
+    }
+    .modal-content{
+        border-radius: .7rem;
+        height: 90%;
+    }
+    .modal-body{
+        padding: 2rem 0rem 2rem 2rem;
+        overflow-y: auto;
+    }
+    .modal-header{
+        align-items: center;
+        border-width: 0px;
+        padding: 2rem;
+        padding-bottom: 0rem;
+    }
+    .modal-header .nombre-cliente{
+        margin: 0;
+    }
+    .modal-body img{
+        height: 4.5rem;
+        width: 4.5rem;
+        border-radius: 50%;
+    }
+    .campos .left {
+        text-align: left;
+        font-size: 0.7rem;
+        color: gray;
+        width: 30%;
+        margin-bottom: 0px;
+        font-weight: bold;
+    }
+    .campos .right {
+        text-align: left;
+        width: 55%;
+        font-size: 1rem;
+        font-weight: bold;
+        color: #0F195E;
+        margin-bottom: 0px;
+    }
+    .campos > p{
+        display: table-cell;
+    }
+    .campos, .valores{
+        display: table;
+        margin: 0px auto;
+        width: 100%;
+
+    }
+    .contener-datos{
+        display:flex;
+        justify-content:center;
+        align-items:start;
+    }
+    .imagen{
+        width:25%;
+        text-align: center;
+    }
+    .datos{
+        width:75%;
+    }
+    .nombre-cliente{
+        font-weight: bolder;
+        margin-bottom: 1rem;
+        color: #0F195E;
+        padding: 0px !important;
+    }
+    .valores .left {
+        text-align: right;
+        font-size: 0.7rem;
+        color: #FE3A00;
+        width: 75%;
+        padding-right: 10px;
+        font-style: italic;
+        margin-bottom: 0px;
+    }
+    .valores .right {
+        text-align: left;
+        width: 25%;
+        padding-left:  10px;
+        font-size: 1rem;
+        font-weight: bold;
+        color:#0F195E;
+        margin-bottom:0px;
+    }
+    .valores > p{
+        display: table-cell;
+    }
+    .div-producto{
+        margin: auto;
+        padding: 15px 0px 0px 0px;
+        min-width: min-content;
+        max-width: 90%;
+    }
+
+    .productos{
+        text-align: center;
+        font-size: .7rem;
+    }
+    thead th{
+        background-color: #FE3A00;
+        color: white;
+        padding: 7px !important;
+        vertical-align: middle !important;
+        line-height: 1rem;
+        font-size: small;
+    }
+    tr th:first-child {
+      border-top-left-radius: 7px;
+      border-bottom-left-radius: 7px;
+    }
+    tr th:last-child {
+      border-top-right-radius: 7px;
+      border-bottom-right-radius: 7px;
+    }
+    tbody td{
+        border-top: 2px solid rgba(15,25,94,0.3) !important;
+        border-bottom: 1px solid rgba(15,25,94,0.3);
+        padding: 1.1rem !important;
+        vertical-align: middle !important;
+        color:#444242;
+    }
+    tr:first-child td {
+        border-top: none !important;
+    }
+    table th{
+        border: none !important;
+    }
+    .footer{
+        text-align:center;
+        display: block;
+        margin-top: 1rem;
+    }
+    .btn-cancelar{
+        background-color: #87868A;
+    }
+    .btn{
+        color: white;
+        width: 8rem;
+        text-transform: uppercase;
+        font-size: .7rem;
+        font-weight: bolder;
+        padding: 10px;
+    }
+    .btn-sucess{
+        background: linear-gradient(to right, #2153FF, #0F195E);
+    }
+    .justificacion{
+        background-color: #D8D9DD;
+        border-radius: 7px;
+        resize: none;
+        width: 100%;
+        border-width: 0px;
+    }
+    .direccion{
+        color: #007bff !important;
+        cursor: pointer;
+        font-size: small;
+        margin-left: 15px;
+    }
+</style>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $.mCustomScrollbar.defaults.scrollButtons.enable=true;
+        $("#body-modal").mCustomScrollbar({
+            theme:"light"
+        });
+    });
+</script>
+<div id="myModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <!-- Modal content-->
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 class="nombre-cliente">{{data.cliente.nombre}} {{data.cliente.apellido}}</h3>
+            <button type="button" class="close cerrar-modal" data-dismiss="modal">&times;</button>
+        </div>
+        <div id="body-modal" class="modal-body mCustomScrollbar">
+            <div class="contener-datos">
+                <div class="imagen">
+                    {% if data.cliente.usuario.foto != " " and data.cliente.usuario.photo_url %}
+                        <img src={{data.cliente.usuario.photo_url}}>
+                    {% else %}
+                        <img src="{% static 'img/iconos_administrador/avatar.png' %}">
+                    {% endif %}
+                </div>
+                <div class="datos">
+                    <div class="campos" >
+                      <label class="left">Estado: </label>
+                      <label class="right">{{data.estado}}</label>
+                    </div>
+                    <div class="campos" >
+                      <label class="left">Nombres: </label>
+                      <label class="right">{{data.cliente.nombre}} {{data.cliente.apellido}}</label>
+                    </div>
+                    <div class="campos" >
+                      <label class="left">RUC/Cédula: </label>
+                      <label class="right">{{data.cliente.usuario.cedula}}</label>
+                    </div>
+                    <div class="campos" >
+                      <label class="left">Teléfono: </label>
+                      <label class="right">{{data.cliente.telefono}}</label>
+                    </div>
+                    <div class="campos">
+                      <label class="left">Tipo de entrega: </label>
+                      <label class="right">{{data.tipo_entrega}}</label>
+                    </div>
+                    <div class="campos">
+                        <label class="left">Dirección: </label>
+                        {% if data.direccion %}
+                        <label class="right">
+                            {{data.direccion.direccion}}
+                            <a class="direccion" data-toggle="modal" data-target="#modalDireccion" onclick='ubicacion("{{data.direccion.direccion}}",{{data.direccion.latitud}},{{data.direccion.longitud}})'>Ver mapa</a>
+                        </label>
+                        {% else %}
+                            <label class="right">
+                                {{data.establecimiento.direccion}}
+                                <a class="direccion" data-toggle="modal" data-target="#modalDireccion" onclick='ubicacion("{{data.establecimiento.direccion}}",{{data.establecimiento.latitud}},{{data.establecimiento.longitud}})'>Ver mapa</a>
+                            </label>
+                        {% endif %}
+                    </div>
+                    <div class="campos">
+                      <label class="left">Fecha: </label>
+                      <label class="right">{{ data.fecha | date:"d/m/Y" }}</label>
+                    </div>
+                </div>
+            </div>
+            <div class="div-producto">
+                <h4 class="nombre-cliente">Productos</h4>
+                <table class="table productos">
+                    <thead>
+                        <tr>
+                            <th>Producto</th>
+                            <th>Cantidad</th>
+                            <th>Precio</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for data in productos %}
+                        <tr>
+                            <td>{{data.producto.nombre}}</td>
+                            <td>{{data.cantidad}}</td>
+                            <td>${{data.precio|floatformat:2}}</td>
+                        </tr>
+                        {% endfor %}
+                        {% for data in ofertas %}
+                        <tr>
+                            <td>{{data.oferta.nombre}}</td>
+                            <td>{{data.cantidad}}</td>
+                            <td>${{data.precio|floatformat:2}}</td>
+                        </tr>
+                        {% endfor %}
+                        {% for data in combos %}
+                        <tr>
+                            <td>{{data.combo.nombre}}</td>
+                            <td>{{data.cantidad}}</td>
+                            <td>${{data.precio|floatformat:2}}</td>
+                        </tr>
+                        {% endfor %}
+                        {% for data in cupones %}
+                        <tr>
+                            <td>{{data.cupon.nombre}}</td>
+                            <td>{{data.cantidad}}</td>
+                            <td>${{data.precio|floatformat:2}}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="valores">
+              <label class="left">Subtotal: </label>
+              <label class="right">${{data.subtotal |floatformat:2 }} </label>
+            </div>
+            <div class="valores">
+              <label class="left">IVA 12%: </label>
+              <label class="right">${{data.iva |floatformat:2 }}</label>
+            </div>
+            <div class="valores">
+              <label class="left">Delivery: </label>
+              <label class="right">${{data.envio |floatformat:2 }}</label>
+            </div>
+            <div class="valores">
+              <label class="left">Total: </label>
+              <label class="right">${{ data.total |floatformat:2  }}</label>
+            </div>
+            {% if data.estado == "Devuelto" %}
+                <div class="div-producto">
+                    <h4 class="nombre-cliente">Justificación</h4>
+                    <textarea disabled class="justificacion" rows="4">{{data.observacion}}</textarea>
+                </div>
+            {% endif %}
+            <div class="footer">
+                <button class="btn btn-cancelar" id="limpiarCampos-btn" type="button" data-dismiss="modal">Cancelar</button>
+                <button class="btn btn-sucess" id="guardar-btn" onclick="confirmar({{data.id_pedido}},'{{data.estado}}')">
+                    {% if data.estado == "Recibido" %}
+                        Enviar
+                    {% else %}
+                        Entregar
+                    {% endif %}
+                </button>
+            </div>
+        </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,242 @@
+{% load static %}
+{% include 'Shared/header.html' %}
+{% include 'Shared/sidebar.html' %}
+{% include 'Shared/navbar.html' %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/css/bootstrap-select.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.14/js/bootstrap-select.min.js"></script>
+
+<style>
+    h3 {
+        padding-right: 10px;
+        padding-left: 5%;
+        font-weight: bold;
+        color: #0F195E;
+    }
+
+    .contenedor-notificaciones{
+        margin:auto;
+        padding: 20px 10px;
+        border-radius:15px;
+        min-width: min-content;
+        max-width: 90%;
+    }
+    .notificaciones-texto{
+        display: flex;
+        justify-content: flex-start;
+        padding-top: 4rem;
+        align-items: center;
+    }
+    .notificaciones-texto h5{
+        color: #FE3A00;
+        font-size: 15px;
+    }
+    .contenedor-imagen, .contenedor-texto{
+	    display:block;
+    }
+    .imagen{
+        height:15rem;
+        width:15rem;
+	    text-align:center;
+	    background-color:#EDEEF0;
+	    border-radius: 10px;
+	    display:flex;
+	    margin:auto;
+	    margin-bottom: 10px;
+    }
+    .imagen img{
+        width: auto;
+        height: 20%;
+        margin: auto;
+    }
+    .contenedor-searchbar{
+        display: flex;
+        align-items: center;
+        border-radius: 5px;
+        height: 40px;
+        font-size: 1rem;
+    }
+    .boton1 .btn,
+    #nuevo-btn{
+        margin: auto;
+        text-align: center;
+        display:block;
+        background: linear-gradient(to right, #2153FF, #0F195E);
+        color: white;
+        font-weight: bolder;
+        font-size: 10px;
+        width: 9rem;
+        height: 2.5rem;
+    }
+    #nuevo-btn{
+        overflow:hidden;
+        position: relative;
+    }
+    #fromDate, #toDate{
+        color: #0F195E;
+        background: #D8D9DD;
+    }
+    #nuevo-btn input.upload {
+        position: absolute;
+        top: 0;
+        right: 0;
+        margin: 0;
+        padding: 0;
+        font-size: 20px;
+        cursor: pointer;
+        opacity: 0;
+        filter: alpha(opacity=0);
+    }
+    #nuevo-btn p{
+        color: white;
+        margin: 5px;
+        font-weight: bolder;
+        font-size: 10px;
+        font-family: inherit;
+    }
+    .input-container .input, select {
+        background: #EDEEF0;
+    }
+    .notificaciones-link{
+        cursor: pointer;
+    }
+    .fila{
+        justify-content: space-between;
+        max-width: 100%;
+        margin: 0;
+    }
+    .fila .input-container {
+        width: 45%;
+    }
+
+</style>
+<script type="text/javascript">
+
+    $(document).ready(function() {
+        $('.selectpicker').selectpicker();
+        $("#guardar-btn").click(function() {
+    	    if (verificarCampos()) {
+                $('.ajax-loader').css("visibility", "visible");
+    		    $("#form").submit()
+        	}
+        });
+        $('.notificaciones-link').click(function() {
+            limpiarCampos();
+            location = '/codigos/';
+        });
+        var now = new Date();
+        var month = (now.getMonth() + 1);
+        var day = now.getDate();
+        if (month < 10)
+            month = "0" + month;
+        if (day < 10)
+            day = "0" + day;
+        var today = now.getFullYear() + '-' + month + '-' + day;
+        var from = document.getElementById("fromDate");
+        from.setAttribute("min", today);
+        var to = document.getElementById("toDate");
+        to.setAttribute("min", today);
+        document.getElementById("fromDate").onchange = function () {
+            var input = document.getElementById("toDate");
+            input.setAttribute("min", this.value);
+        }
+        document.getElementById("toDate").onchange = function () {
+            var input = document.getElementById("fromDate");
+            input.setAttribute("max", this.value);
+        }
+
+    });
+
+    var loadImage = function(event) {
+        var output = document.getElementById('img-subir');
+        output.src="{% static 'img/iconos_administrador/agregar_imagen.png' %}"
+        output.style="height:auto;width: inherit";
+        output.src = URL.createObjectURL(event.target.files[0]);
+        output.onload = function() {
+            URL.revokeObjectURL(output.src) // free memory
+        }
+    };
+
+    function limpiarCampos() {
+    	var inputs = $(".input")
+    	//LIMPIANDO INPUTS
+    	inputs.each(function() {
+    		$(this).val("")
+    	})
+    }
+
+    function verificarCampos() {
+    	var verificacion = true
+    	var inputs = $(".input")
+    	//VERIFICANDO CADA CAMPO
+    	inputs.each(function() {if ($(this).val() == "") {verificacion = false}})
+    	//DISPARANDO ALERTA SI ES NECESARIA
+    	if (! verificacion) {alert("Por favor ingrese la información requerida.")}
+    	return verificacion
+    }
+
+</script>
+<div class="col-12">
+    <div class="row notificaciones-texto">
+        <h3 class="notificaciones-link">CÓDIGOS</h3>
+        <h5>> Nuevo código por producto comprado</h5>
+    </div>
+    <form action="" method="POST" enctype="multipart/form-data" class="col-md-12">
+        {% csrf_token %}
+        <div class="row contenedor-notificaciones">
+            <div class="col-md-10 contenedor-texto">
+                <div class="row fila">
+                    <div class="col-md-5 input-container">
+                        <label>Código</label>
+                        <input type="text" class="form-control input" name="nombre" required>
+                    </div>
+                    <div class="col-md-3 input-container">
+                        <label>Producto:</label>
+                        <br>
+                        <input list="brow" name="producto" id="producto" required>
+                        <datalist id="brow" name="producto" required>
+                        {% for producto in productosLista %}
+                            <option class="input" value={{producto.id_producto}} maxlength="20" name="producto" >{{producto.nombre}}</option>
+                        {% endfor %}
+                        </datalist>
+                    </div>
+                    <div class="col-md-4  input-container">
+                        <label>Cantidad a comprar:</label>
+                        <input type="number" class="form-control input" name="cantidadComprar" required>
+                    </div>
+                </div>
+                <br>
+                <div class="row fila">
+                    <div class="col-md-4 input-container">
+                        <label>Fecha inicio:</label>
+                        <input type='date' class="form-control" id='fromDate' name="from" required/>
+    		        </div>
+                    <div class="col-md-4 input-container">
+    			        <label>Fecha fin:</label>
+    			        <input type='date' class="form-control" id='toDate' name="to" required/>
+    		        </div>
+                    <div class="col-md-4 input-container">
+                        <label>Cantidad disponible:</label>
+                        <input type="number" class="form-control input" name="cantidad" required>
+                    </div>
+		        </div>
+		        <br>
+                <div class="input-container">
+			        <label>Descripción:</label>
+			        <textarea class="form-control input" name="descripcion" maxlength="90" rows="1" required></textarea>
+		        </div>
+            </div>
+            <div class="col-md-2 contenedor-imagen">
+                <div class="imagen">
+                    <img id="img-subir" class="img-subir center-block"
+                        src="{% static 'img/iconos_administrador/agregar_imagen.png' %}">
+                </div>
+                <div id="nuevo-btn" class="btn btn-primary">
+                    <p>SUBIR IMAGEN</p>
+                    <input class="upload" type="file" accept=".jpg, .png, .jpeg, .svg" class="form-control input"
+                        onchange="loadImage(event)" name="image" required>
+                </div>
+            </div>
+        </div>
+        <div class = "boton1"><button class="btn btn-sucess" id="nuevo-btn" >CREAR</button></div>
+    </form>
+</div>

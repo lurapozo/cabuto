@@ -1,0 +1,141 @@
+{% load static %}
+
+
+<style>
+    .tool-container {
+        display: flex;
+        justify-content: left;
+        padding-right: 5px !important;
+        padding-left: 25px !important;
+        /*align-items: center;*/
+    }
+
+    .logo-container {
+        display: flex;
+        justify-content: left;
+        align-items: center;
+        margin-left: 2rem;
+    }
+
+    .iconos{
+        display: flex;
+        float:right;
+        justify-content: right;
+        align-items: right;
+        padding:0px
+        margin:0px;
+    }
+
+    .notification-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding:15px!important;
+        /*margin:0px !important;*/
+    }
+
+    .message-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding:15px!important;
+        /*margin:0px !important;*/
+    }
+
+    .logout-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding:0px 0px 0px 15px!important;
+        /*margin:0px !important;*/
+    }
+
+    .logo-header-img {
+        width: 9rem;
+        margin-top: 1rem;
+    }
+
+    .notifications-img {
+        width: 1.2rem;
+
+    }
+
+    .message-img {
+        width: 1.3rem;
+
+    }
+
+    .logout-link {
+        color: white;
+        font-weight: bold;
+
+    }
+
+    .btn-menu {
+        color: white !important;
+        background: none !important;
+        width: 3rem !important;
+        height: 3rem !important;
+        margin-top: 2rem !important;
+    }
+
+    .btn-menu:hover {
+        color: black !important;
+    }
+
+    nav#nav-custom {
+        /*margin-left: 15rem;*/
+        background: linear-gradient(to right, #FFA801, #FE3A00);
+    }
+    #nav-custom{
+        padding:0px!important;
+        margin:0px!important;
+    }
+    #simple-container{
+        padding:0px!important;
+        margin:0px!important;
+    }
+</style>
+<nav id="nav-custom">
+    <div id="simple-container">
+        <div style = "padding-right:0px; margin:0px;"class="form-row ">
+            <div  class="col-0 col-md-0 form-group tool-container">
+
+                <button type="button" id="sidebarCollapse" class="btn btn-outline-light btn-menu d-inline-block  ml-auto">
+                    <i class="fas fa-align-left"></i>
+                </button>
+            </div>
+            <div class="col-5 col-md-8 form-group logo-container">
+                <img class="logo-header-img" src="https://cdn.discordapp.com/attachments/1009846868806729738/1014286378298777670/cabuto_IUVHKai2.png">
+            </div>
+            <div class= "iconos">
+            <!--<div class="col-1 col-md-1 form-group notification-container">-->
+            <div class="form-group notification-container">
+                <a href="#">
+                    <img class="notifications-img" src="{% static 'img/iconos_administrador/notificaciones.png' %}">
+                </a>
+            </div>
+
+            <!--<div class="col-2 col-md-1 form-group message-container">-->
+            <div class="form-group message-container">
+                <a href="#">
+                    <img class="message-img" src="{% static 'img/iconos_administrador/mensajería.png' %}">
+                </a>
+            </div>
+
+            <!--<div class="col-1 col-md-1 form-group logout-container">-->
+            <div class="form-group logout-container">
+                <a href="/logout/">
+                    <span class="logout-link"><!--Cerrar Sesión-->Cerrar Sesión</span>
+                </a>
+            </div>
+            </div>
+        </div>
+
+
+
+    </div>
+
+
+
+</nav>

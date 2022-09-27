@@ -1,0 +1,46 @@
+body {
+	background-image: url('../../img/fondo.png');
+	background-size: cover;
+}
+.main-container {
+	margin: 50px 0px; 
+}
+.sub-container {
+	background-color: white;
+	width: 600px;
+	border: 2px solid gray;
+	border-radius: 7px;
+	margin: auto;
+}
+.title-form-container {
+	background-color: #ca5153;
+	color: white;
+	font-family: 'Hand of Sean';
+	text-align: center;
+	padding: 20px;
+}
+.form-wrapper {
+	font-family: 'Hand of Sean';
+	padding: 20px;
+}
+.editar-container {
+	text-align: right;
+} 
+.editar-container > a > button {
+	background-color: #ca5153;
+	color: white;
+}
+.editar-container > a > button:hover {
+	background-color: #c0193b;
+	color: white;
+} 
+.sub2-container {
+	border-bottom: 1px solid gray;
+}
+.sub2-container > h5 {
+	margin-left: 10px;
+}
+.sub2-container > img {
+	width: 200px;
+	padding-bottom: 10px;
+}

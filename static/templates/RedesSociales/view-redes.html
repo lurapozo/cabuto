@@ -1,0 +1,178 @@
+{% load static %}
+
+<style>
+    .titulo-red {
+        padding:0px;
+        padding-bottom: 10px;
+        padding-left: 5%;
+        font-weight: bold;
+        color: #0F195E;
+    }
+    .contenedor-red{
+        margin:auto;
+        padding: 20px 0px;
+        border-radius:15px;
+    }
+    .redes-texto{
+        display: flex;
+        justify-content: flex-start;
+        padding-top: 4rem;
+        align-items: center;
+    }
+    .redes-texto h5{
+        color: #FE3A00;
+        font-size: 15px;
+    }
+    .contenedor-imagen{
+        display:flex;
+        align-items: baseline;
+        margin:auto;
+    }
+
+    .contenedor-texto{
+	    display:block;
+    }
+    .imagen{
+        height: 6rem;
+        text-align: center;
+        background-color: #EDEEF0;
+        border-radius: 10px;
+        display: flex;
+        margin-bottom: 10px;
+        width: 10rem;
+    }
+    .imagen img{
+        width: auto;
+        padding: 15px;
+        height: 100%;
+        margin: auto;
+    }
+    .contenedor-searchbar{
+        display: flex;
+        align-items: center;
+        border-radius: 5px;
+        height: 40px;
+        font-size: 1rem;
+    }
+    .boton1 .btn,
+    #nuevo-btn{
+        margin: auto;
+        text-align: center;
+        display:block;
+        background: linear-gradient(to right, #2153FF, #0F195E);
+        color: white;
+        font-weight: bolder;
+        font-size: 10px;
+        width: 9rem;
+        height: 2.5rem;
+    }
+    #nuevo-btn{
+        overflow:hidden;
+        position: relative;
+        width: 7rem;
+        margin-left: 10px;
+        margin-top: 0px;
+    }
+    #nuevo-btn input.upload {
+        position: absolute;
+        top: 0;
+        right: 0;
+        margin: 0;
+        padding: 0;
+        font-size: 20px;
+        cursor: pointer;
+        opacity: 0;
+        filter: alpha(opacity=0);
+    }
+    #nuevo-btn p{
+        color: white;
+        margin: 5px;
+        font-weight: bolder;
+        font-size: 10px;
+        font-family: inherit;
+    }
+    .input-container .input, select {
+        background: #EDEEF0;
+    }
+    .redes-link{
+        cursor: pointer;
+    }
+
+</style>
+<script type="text/javascript">
+
+    $(document).ready(function() {
+        $("#guardar-btn").click(function() {
+    	    if (verificarCampos()) {
+    		    $("#form").submit()
+        	}
+        });
+        $('.redes-link').click(function() {
+            limpiarCampos();
+            location = '/redesSociales/';
+        });
+
+    });
+
+    var loadImage = function(event) {
+        var output = document.getElementById('img-subir');
+        output.src="{% static 'img/iconos_administrador/agregar_imagen.png' %}"
+        output.style="height:100%;";
+        output.src = URL.createObjectURL(event.target.files[0]);
+        output.onload = function() {
+            URL.revokeObjectURL(output.src) // free memory
+        }
+    };
+
+    function limpiarCampos() {
+    	var inputs = $(".input")
+    	//LIMPIANDO INPUTS
+    	inputs.each(function() {
+    		$(this).val("")
+    	})
+    }
+
+    function verificarCampos() {
+    	var verificacion = true
+    	var inputs = $(".input")
+    	inputs.each(function() {if ($(this).val() == "") {verificacion = false}})
+    	if (! verificacion) {alert("Por favor ingrese la información requerida.")}
+    	return verificacion
+    }
+
+</script>
+<div id="myModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <!-- Modal content-->
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close cerrar-modal" data-dismiss="modal">&times;</button>
+        </div>
+        <div id="body-modal" class="modal-body mCustomScrollbar">
+        <h3 class="titulo-red">INFORMACIÓN RED</h3>
+    <form enctype="multipart/form-data" class="col-md-12">
+        {% csrf_token %}
+        <div class="row contenedor-red">
+            <div class="col-md-8 contenedor-texto">
+                <div class="input-container">
+			        <label>Red Social</label>
+                    <input type="text" class="form-control input" name="nombre" value="{{data.nombre}}" disabled required>
+		        </div>
+                <br>
+                <div class="input-container">
+                    <label>Enlace</label>
+			        <input type="text" class="form-control input" name="enlace" value="{{data.enlace}}" disabled required>
+		        </div>
+                <br>
+            </div>
+            <div class="col-md-4 contenedor-imagen">
+                <div class="imagen">
+                    <img id="img-subir"class="img-subir center-block" src="https://cabutoshop.pythonanywhere.com/media/{{data.icono}}">
+                </div>
+            </div>
+        </div>
+    </form>
+  </div>
+    </div>
+  </div>
+</div>

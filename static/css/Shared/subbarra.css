@@ -1,0 +1,21 @@
+@font-face {
+    font-family: 'Poppins-Regular';
+    src: url('../../fonts/Poppins-Regular.ttf') format('truetype');
+}
+
+.subbarra-container {
+    width: 100%;
+    padding: 10px 0px;
+    display: flex;
+}
+
+.seccion-container {
+    padding: 0px 20px;
+    margin-right: 20px;
+    border-right: 5px solid gray;
+}
+
+.subbarra-h2 {
+    margin: 15px 0px 0px;
+    font-family: 'Hand of Sean';
+}

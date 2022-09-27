@@ -1,0 +1,244 @@
+{% load static %}
+{% include 'Shared/header.html' %}
+{% include 'Shared/sidebar.html' %}
+{% include 'Shared/navbar.html' %}
+
+
+<style>
+  h3 {
+    padding-right: 10px;
+    padding-left: 5%;
+    font-weight: bold;
+    color: #0F195E;
+  }
+
+  .contenedor-cobertura {
+    margin: auto;
+    padding: 20px 10px;
+    border-radius: 15px;
+    min-width: min-content;
+    max-width: 85%;
+  }
+
+  .cobertura-texto {
+    display: flex;
+    justify-content: flex-start;
+    padding-top: 4rem;
+    align-items: center;
+  }
+
+  .cobertura-texto h5 {
+    color: #FE3A00;
+    font-size: 15px;
+  }
+
+  .contener-imagen,
+  .contenedor-texto {
+    display: block;
+  }
+
+  .imagen {
+    height: 15rem;
+    text-align: center;
+    background-color: #EDEEF0;
+    border-radius: 10px;
+    display: flex;
+    margin-bottom: 10px;
+  }
+
+  .imagen img {
+    width: auto;
+    height: 20%;
+    margin: auto;
+  }
+
+  .contenedor-searchbar {
+    display: flex;
+    align-items: center;
+    border-radius: 5px;
+    height: 40px;
+    font-size: 1rem;
+  }
+
+  .boton1 .btn,
+  #nuevo-btn {
+    margin: auto;
+    text-align: center;
+    display: block;
+    background: linear-gradient(to right, #2153FF, #0F195E);
+    color: white;
+    font-weight: bolder;
+    font-size: 1rem;
+
+    width: 18vw;
+    height: 3rem;
+  }
+
+  #nuevo-btn {
+    overflow: hidden;
+    position: relative;
+  }
+
+  #nuevo-btn input.upload {
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin: 0;
+    padding: 0;
+    font-size: 20px;
+    cursor: pointer;
+    opacity: 0;
+    filter: alpha(opacity=0);
+  }
+
+  #nuevo-btn p {
+    color: white;
+    margin: 5px;
+    font-weight: bolder;
+    font-size: 10px;
+    font-family: inherit;
+  }
+
+  .input-container .input,
+  select {
+    background: #EDEEF0;
+  }
+
+  .cobertura-link {
+    cursor: pointer;
+  }
+
+  .modal-body {
+    padding: 1rem 3rem;
+  }
+
+  #contenedor-mapa {
+    height: 22rem;
+    width: auto;
+    margin: auto;
+  }
+
+  .cerrar-modal {
+    margin-top: 20px;
+    text-align: end;
+    margin-right: 20px;
+  }
+
+  #img-ubicacion {
+    height: 3rem;
+    cursor: pointer;
+  }
+</style>
+<script type="text/javascript">
+
+  $(document).ready(function () {
+    $("#guardar-btn").click(function () {
+      if (verificarCampos()) {
+        $("#form").submit()
+      }
+    });
+    $('.cobertura-link').click(function () {
+      limpiarCampos();
+      location = '/coberturaEnvio/';
+    });
+
+    $('#bgcolor').on('input',
+      function () {
+        ubicacion($(this).val());
+        console.log(document.getElementById('bgcolor').value);
+      }
+    );
+  });
+
+  var loadImage = function (event) {
+    var output = document.getElementById('img-subir');
+    output.src = "{% static 'img/iconos_administrador/agregar_imagen.png' %}"
+    output.style = "height:100%;";
+    output.src = URL.createObjectURL(event.target.files[0]);
+    output.onload = function () {
+      URL.revokeObjectURL(output.src) // free memory
+    }
+  };
+
+  function limpiarCampos() {
+    var inputs = $(".input")
+    //LIMPIANDO INPUTS
+    inputs.each(function () {
+      $(this).val("")
+    })
+  }
+
+  function verificarCampos() {
+    var verificacion = true
+    var inputs = $(".input")
+    //VERIFICANDO CADA CAMPO
+    inputs.each(function () { if ($(this).val() == "") { verificacion = false } })
+    //DISPARANDO ALERTA SI ES NECESARIA
+    if (!verificacion) { alert("Por favor ingrese la información requerida.") }
+    return verificacion
+  }
+
+  function ubicacion(color) {
+    polygons = [];
+    var myLatLng = new google.maps.LatLng(-2.19616, -79.88621);
+    var mapOptions = {
+      zoom: 13,
+      center: myLatLng,
+      mapTypeId: google.maps.MapTypeId.RoadMap
+    };
+    var map = new google.maps.Map(document.getElementById('contenedor-mapa'), mapOptions);
+
+    var poligonos = "{{datos | escapejs}}";
+    poligonos = (0, eval)('(' + poligonos + ')');
+    poligonos.forEach(function (poligono) {
+      polygons.push(makePolygon(JSON.parse(poligono.zona), poligono.color));
+    });
+    polygons.forEach(function (poly) {
+      poly.setMap(map);
+    });
+  }
+
+  function makePolygon(paths, color) {
+    return (new google.maps.Polygon({
+      paths: paths,
+      strokeColor: color,
+      strokeOpacity: 0.8,
+      strokeWeight: 2,
+      fillColor: color,
+      fillOpacity: 0.35
+    }));
+  }
+
+  function getPolygonCoords() {
+    var len = myPolygon.getPath().getLength();
+    var htmlStr = "[";
+    for (var i = 0; i < len; i++) {
+      if (i == len - 1) {
+        htmlStr += '{"lat":' + myPolygon.getPath().getAt(i).lat() + ',"lng":' + myPolygon.getPath().getAt(i).lng() + '}';
+      } else {
+        htmlStr += '{"lat":' + myPolygon.getPath().getAt(i).lat() + ',"lng":' + myPolygon.getPath().getAt(i).lng() + '},';
+      }
+    }
+    htmlStr += "]";
+    document.getElementById('zonaEnvio').value = htmlStr;
+  }
+
+</script>
+
+<body onload="ubicacion('#000000')"></body>
+
+<div class="col-md-12">
+  <div class="row cobertura-texto">
+    <h3 class="cobertura-link">COBERTURA DE ENTREGAS</h3>
+    <h5>> Todas las coberturas</h5>
+  </div>
+  <input type="hidden" id="zonaEnvio" class="form-control input" name="zona" value="" required>
+  <div id="contenedor-mapa"></div>
+</div>
+
+<br>
+<a href="..">
+  <div class="boton1"><button id="nuevo-btn">Volver</button></div>
+</a>
+
+</div>

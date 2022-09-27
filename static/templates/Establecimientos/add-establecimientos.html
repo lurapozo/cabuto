@@ -1,0 +1,272 @@
+{% load static %}
+{% include 'Shared/header.html' %}
+{% include 'Shared/sidebar.html' %}
+{% include 'Shared/navbar.html' %}
+<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.4.5/leaflet.css"/>
+<script src="http://cdn.leafletjs.com/leaflet-0.4.5/leaflet.js"></script>
+
+<style>
+    h3 {
+        padding-right: 10px;
+        padding-left: 5%;
+        font-weight: bold;
+        color: #0F195E;
+    }
+
+    .contenedor-notificaciones{
+        margin:auto;
+        padding: 20px 10px;
+        border-radius:15px;
+        min-width: min-content;
+        max-width: 85%;
+    }
+    .notificaciones-texto{
+        display: flex;
+        justify-content: flex-start;
+        padding-top: 4rem;
+        align-items: center;
+    }
+    .notificaciones-texto h5{
+        color: #FE3A00;
+        font-size: 15px;
+    }
+    .contenedor-imagen, .contenedor-texto{
+	    display:block;
+    }
+    .imagen{
+        height:15rem;
+	    text-align:center;
+	    background-color:#EDEEF0;
+	    border-radius: 10px;
+	    display:flex;
+	    margin-bottom: 10px;
+    }
+    .imagen img{
+        width: auto;
+        height: 20%;
+        margin: auto;
+    }
+    .contenedor-searchbar{
+        display: flex;
+        align-items: center;
+        border-radius: 5px;
+        height: 40px;
+        font-size: 1rem;
+    }
+    .boton1 .btn,
+    #nuevo-btn{
+        margin: auto;
+        text-align: center;
+        display:block;
+        background: linear-gradient(to right, #2153FF, #0F195E);
+        color: white;
+        font-weight: bolder;
+        font-size: 10px;
+        width: 7rem;
+        height: 2.5rem;
+    }
+    #nuevo-btn{
+        overflow:hidden;
+        position: relative;
+    }
+    #nuevo-btn input.upload {
+        position: absolute;
+        top: 0;
+        right: 0;
+        margin: 0;
+        padding: 0;
+        font-size: 20px;
+        cursor: pointer;
+        opacity: 0;
+        filter: alpha(opacity=0);
+    }
+    #nuevo-btn p{
+        color: white;
+        margin: 5px;
+        font-weight: bolder;
+        font-size: 10px;
+        font-family: inherit;
+    }
+    .input-container .input, select {
+        background: #EDEEF0;
+    }
+    .notificaciones-link{
+        cursor: pointer;
+    }
+    .modal-body{
+        padding:1rem 3rem;
+    }
+
+    #mapa{
+        height: 23rem;
+        width: 23rem;
+        margin: auto;
+    }
+    .cerrar-modal{
+        margin-top: 20px;
+        text-align: end;
+        margin-right: 20px;
+    }
+    #img-ubicacion{
+        height:3rem;
+        cursor: pointer;
+    }
+
+</style>
+<script type="text/javascript">
+
+    $(document).ready(function() {
+        $("#guardar-btn").click(function() {
+    	    if (verificarCampos()) {
+    		    $("#form").submit()
+        	}
+        });
+        $('.notificaciones-link').click(function() {
+            limpiarCampos();
+            location = '/establecimientos/';
+        });
+
+    });
+
+    var loadImage = function(event) {
+        var output = document.getElementById('img-subir');
+        output.src="{% static 'img/iconos_administrador/agregar_imagen.png' %}"
+        output.style="height:100%;";
+        output.src = URL.createObjectURL(event.target.files[0]);
+        output.onload = function() {
+            URL.revokeObjectURL(output.src) // free memory
+        }
+    };
+
+    function limpiarCampos() {
+    	var inputs = $(".input")
+    	//LIMPIANDO INPUTS
+    	inputs.each(function() {
+    		$(this).val("")
+    	})
+    }
+
+    function verificarCampos() {
+    	var verificacion = true
+    	var inputs = $(".input")
+    	//VERIFICANDO CADA CAMPO
+    	inputs.each(function() {if ($(this).val() == "") {verificacion = false}})
+    	//DISPARANDO ALERTA SI ES NECESARIA
+    	if (! verificacion) {alert("Por favor ingrese la información requerida.")}
+    	return verificacion
+    }
+
+    function ubicacion(){
+        document.getElementById('contenedor-mapa').innerHTML = "<div id='mapa'></div>";
+        latitud=document.getElementById("latitud").value;
+        longitud=document.getElementById("longitud").value;
+        var mymap = L.map('mapa');
+        L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    	maxZoom: 19
+	    }).addTo(mymap);
+	    if(latitud==""){
+           latitud=-2.19616;
+        }
+        if(longitud==""){
+            longitud=-79.88621;
+            mymap.setView([latitud, longitud ], 14);
+        }else{
+            mymap.setView([latitud, longitud ], 18);
+        }
+	    var theMarker = new L.Marker([latitud, longitud]).addTo(mymap);
+
+        mymap.on('click',function(e){
+            lat = e.latlng.lat;
+            lon = e.latlng.lng;
+            console.log("You clicked the map at LAT: "+ lat+" and LONG: "+lon );
+                //Clear existing marker,
+                if (theMarker != undefined) {
+                      mymap.removeLayer(theMarker);
+                };
+            //Add a marker to show where you clicked.
+             theMarker = L.marker([lat,lon]).addTo(mymap);
+             document.getElementById("latitud").value=lat;
+             document.getElementById("longitud").value=lon;
+        });
+
+    }
+
+</script>
+<div class="col-12">
+  <div class="col-md-12">
+    <div class="row notificaciones-texto">
+        <h3 class="notificaciones-link">ESTABLECIMIENTOS</h3>
+        <h5>> Nuevo establecimiento</h5>
+    </div>
+    <form action="" method="POST" enctype="multipart/form-data" class="col-md-12">
+        {% csrf_token %}
+        <div class="row contenedor-notificaciones">
+            <div class="col-md-6 contenedor-texto">
+                <div class="input-container">
+			        <label>Número del local:</label>
+                    <input type="text" class="form-control input" name="nlocal" required>
+		        </div>
+                <br>
+                <div class="input-container">
+                    <label>Nombre:</label>
+			        <input type="text" class="form-control input" name="nombre" required>
+		        </div>
+                <br>
+                <div class="input-container">
+			        <label>Dirección:</label>
+			        <input type="text" class="form-control input" name="direccion" required>
+		        </div>
+		        <br>
+		        <div class="input-container">
+			        <label>Teléfono:</label>
+			        <input type="text" class="form-control input" name="telefono" required>
+		        </div>
+		        <br>
+		        <div class="input-container">
+			        <label>Encargado:</label>
+			        <input type="text" class="form-control input" name="encargado" required>
+		        </div>
+		        <br>
+            </div>
+            <div class="col-md-6 contenedor-imagen">
+                <div class="input-container">
+			        <label>Ubicación en el mapa:</label>
+			        <input type="hidden" id="latitud" class="form-control input" name="latitud" value="" required>
+			        <input type="hidden" id="longitud" class="form-control input" name="longitud" value="" required>
+		        </div>
+			    <a data-toggle="modal" data-target="#myModal">
+			        <img id="img-ubicacion"class="img-ubicacion center-block" src="{% static 'img/iconos_administrador/ubicacion.png' %}" onclick=ubicacion()>
+			        <br>
+			    </a>
+			    <br>
+                <div class="imagen">
+                    <img id="img-subir"class="img-subir center-block" src="{% static 'img/iconos_administrador/agregar_imagen.png' %}">
+                </div>
+                <div id="nuevo-btn" class="btn btn-primary">
+                    <p>SUBIR IMAGEN</p>
+                    <input class="upload" type="file" accept=".jpg, .png, .jpeg, .svg" class="form-control input" onchange="loadImage(event)" name="image" required>
+                </div>
+            </div>
+        </div>
+        <br>
+        <div class = "boton1"><button class="btn btn-sucess" id="nuevo-btn" >CREAR</button></div>
+    </form>
+
+  </div>
+</div>
+
+<div id="myModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <!-- Modal content-->
+    <div class="modal-content">
+        <button type="button" class="close cerrar-modal" data-dismiss="modal">&times;</button>
+      <div class="modal-body">
+            <div id="contenedor-mapa">
+
+            </div>
+            <br>
+            <div class = "boton1"><button class="btn btn-sucess" data-dismiss="modal" >GUARDAR</button></div>
+      </div>
+    </div>
+  </div>
+</div>
