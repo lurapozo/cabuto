@@ -30,7 +30,7 @@ python -m venv myvenv
 ```
 Activar entorno virtual
 ```
-source myenv/bin/activate
+source myvenv/bin/activate
 ```
 El proyecto cuenta con un archivo requirements.txt donde se encuentran listadas todas las dependencias que requiere el proyecto para su correcta ejecución.
 ```
