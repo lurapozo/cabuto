@@ -418,6 +418,24 @@ def pagarPedido(request):
                 'valid': 'ok'
             }
             return JsonResponse(res,safe=False)
+
+        if not pedido.pagado:
+            total=round(pedido.total,2)
+            msj= "Se ha realizado la compra de su pedido con valor de $"+str(total)+"\n"
+            try:
+                html = render_to_string("Correos/pagoEfectivo.html",{"data":pedido}).strip()
+                msg = EmailMultiAlternatives('Pedido pagado', html, 'cabutosoftware1@gmail.com', [user.correo])
+                msg.content_subtype = 'html'
+                msg.mixed_subtype = 'related'
+                msg.send()
+            except Exception as e:
+                print("Error al enviar correo")
+                print("type error: " + str(e))
+            res = {
+                'valid': 'ok'
+            }
+            return JsonResponse(res,safe=False)
+
         else:
             res = {
                 'valid': 'not'
